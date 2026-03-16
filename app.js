@@ -12,1071 +12,660 @@ const TB_SCORES = 'uNMexs7BYTXQ2_song-lyric-guesser_scores';
 const TB_HISTORY = 'uNMexs7BYTXQ2_song-lyric-guesser_game_history';
 
 // ========================================
-// SONG DATABASE (50 songs - factual clues)
+// DOM REFERENCES (cached once)
 // ========================================
-const SONG_DATABASE = [
-  {
-    clue: "This 1977 Bee Gees disco anthem was written for the Saturday Night Fever soundtrack and became one of the best-selling singles of all time.",
-    answer: { title: "Stayin' Alive", artist: "Bee Gees" },
-    wrong: [
-      { title: "Disco Inferno", artist: "The Trammps" },
-      { title: "Le Freak", artist: "Chic" },
-      { title: "I Will Survive", artist: "Gloria Gaynor" }
-    ]
-  },
-  {
-    clue: "Queen's 1975 rock opera masterpiece features operatic sections, a piano ballad intro, and a hard rock finale. It held the UK number one spot for nine weeks.",
-    answer: { title: "Bohemian Rhapsody", artist: "Queen" },
-    wrong: [
-      { title: "Stairway to Heaven", artist: "Led Zeppelin" },
-      { title: "Hotel California", artist: "Eagles" },
-      { title: "November Rain", artist: "Guns N' Roses" }
-    ]
-  },
-  {
-    clue: "Michael Jackson's 1982 hit features a spoken-word horror monologue by Vincent Price and a groundbreaking zombie dance music video directed by John Landis.",
-    answer: { title: "Thriller", artist: "Michael Jackson" },
-    wrong: [
-      { title: "Ghostbusters", artist: "Ray Parker Jr." },
-      { title: "Superstition", artist: "Stevie Wonder" },
-      { title: "Beat It", artist: "Michael Jackson" }
-    ]
-  },
-  {
-    clue: "This 2015 Bruno Mars and Mark Ronson collaboration pays tribute to 1980s funk and features a bass line inspired by Zapp & Roger.",
-    answer: { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars" },
-    wrong: [
-      { title: "Happy", artist: "Pharrell Williams" },
-      { title: "Get Lucky", artist: "Daft Punk" },
-      { title: "Treasure", artist: "Bruno Mars" }
-    ]
-  },
-  {
-    clue: "Nirvana's 1991 grunge anthem from the Nevermind album is credited with bringing alternative rock into the mainstream and ending the hair metal era.",
-    answer: { title: "Smells Like Teen Spirit", artist: "Nirvana" },
-    wrong: [
-      { title: "Alive", artist: "Pearl Jam" },
-      { title: "Black Hole Sun", artist: "Soundgarden" },
-      { title: "Creep", artist: "Radiohead" }
-    ]
-  },
-  {
-    clue: "Adele's 2011 breakup ballad won six Grammy Awards and spent years on the charts. The title references her age when the relationship began.",
-    answer: { title: "Rolling in the Deep", artist: "Adele" },
-    wrong: [
-      { title: "Someone Like You", artist: "Adele" },
-      { title: "Stay", artist: "Rihanna" },
-      { title: "Jar of Hearts", artist: "Christina Perri" }
-    ]
-  },
-  {
-    clue: "This 1985 charity single was written by Michael Jackson and Lionel Richie and recorded by a supergroup of 46 artists to raise funds for African famine relief.",
-    answer: { title: "We Are the World", artist: "USA for Africa" },
-    wrong: [
-      { title: "Do They Know It's Christmas?", artist: "Band Aid" },
-      { title: "Heal the World", artist: "Michael Jackson" },
-      { title: "Imagine", artist: "John Lennon" }
-    ]
-  },
-  {
-    clue: "The Weeknd's 2019 synth-pop hit features an iconic synthesizer riff and a music video set in Las Vegas. It spent a record 57 weeks in the Billboard top 10.",
-    answer: { title: "Blinding Lights", artist: "The Weeknd" },
-    wrong: [
-      { title: "Starboy", artist: "The Weeknd" },
-      { title: "Save Your Tears", artist: "The Weeknd" },
-      { title: "Levitating", artist: "Dua Lipa" }
-    ]
-  },
-  {
-    clue: "Whitney Houston's 1992 power ballad from The Bodyguard soundtrack became one of the best-selling singles ever. It was originally written by Dolly Parton in 1973.",
-    answer: { title: "I Will Always Love You", artist: "Whitney Houston" },
-    wrong: [
-      { title: "Greatest Love of All", artist: "Whitney Houston" },
-      { title: "My Heart Will Go On", artist: "Celine Dion" },
-      { title: "Unchained Melody", artist: "Righteous Brothers" }
-    ]
-  },
-  {
-    clue: "This 2017 Luis Fonsi and Daddy Yankee reggaeton hit became the first Spanish-language song to reach number one on the Billboard Hot 100 since Macarena.",
-    answer: { title: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee" },
-    wrong: [
-      { title: "Bailando", artist: "Enrique Iglesias" },
-      { title: "Mi Gente", artist: "J Balvin" },
-      { title: "Shakira: Hips Don't Lie", artist: "Shakira" }
-    ]
-  },
-  {
-    clue: "Led Zeppelin's 1971 epic is one of the most requested songs in radio history despite never being released as a single. It builds from acoustic folk to hard rock.",
-    answer: { title: "Stairway to Heaven", artist: "Led Zeppelin" },
-    wrong: [
-      { title: "Free Bird", artist: "Lynyrd Skynyrd" },
-      { title: "Comfortably Numb", artist: "Pink Floyd" },
-      { title: "Bohemian Rhapsody", artist: "Queen" }
-    ]
-  },
-  {
-    clue: "This 2003 Outkast hit blends funk, rock, and hip-hop. Its 'shake it like a Polaroid picture' lyric prompted Polaroid to issue a statement about their cameras.",
-    answer: { title: "Hey Ya!", artist: "Outkast" },
-    wrong: [
-      { title: "Crazy in Love", artist: "Beyonce" },
-      { title: "Yeah!", artist: "Usher" },
-      { title: "In Da Club", artist: "50 Cent" }
-    ]
-  },
-  {
-    clue: "Dolly Parton wrote this 1973 country classic about a beautiful woman she feared would steal her husband. It was famously covered by Whitney Houston for a film.",
-    answer: { title: "Jolene", artist: "Dolly Parton" },
-    wrong: [
-      { title: "9 to 5", artist: "Dolly Parton" },
-      { title: "Stand By Your Man", artist: "Tammy Wynette" },
-      { title: "Crazy", artist: "Patsy Cline" }
-    ]
-  },
-  {
-    clue: "Eminem's 2000 track tells the story of an obsessed fan who writes increasingly disturbing letters. The fan's name became slang for overly devoted followers.",
-    answer: { title: "Stan", artist: "Eminem" },
-    wrong: [
-      { title: "Lose Yourself", artist: "Eminem" },
-      { title: "The Real Slim Shady", artist: "Eminem" },
-      { title: "Changes", artist: "2Pac" }
-    ]
-  },
-  {
-    clue: "This 1984 Prince song was the lead single from the Purple Rain album and soundtrack. It features a synthesizer-driven arrangement and themes of apocalyptic celebration.",
-    answer: { title: "When Doves Cry", artist: "Prince" },
-    wrong: [
-      { title: "Purple Rain", artist: "Prince" },
-      { title: "Kiss", artist: "Prince" },
-      { title: "1999", artist: "Prince" }
-    ]
-  },
-  {
-    clue: "Released in 1994, this TLC hit addresses themes of safe relationships and became the best-selling single by an American girl group at the time.",
-    answer: { title: "Waterfalls", artist: "TLC" },
-    wrong: [
-      { title: "No Scrubs", artist: "TLC" },
-      { title: "Wannabe", artist: "Spice Girls" },
-      { title: "Bills, Bills, Bills", artist: "Destiny's Child" }
-    ]
-  },
-  {
-    clue: "Fleetwood Mac's 1977 song from the Rumours album was written by Lindsey Buckingham about his breakup with Stevie Nicks while they continued working together.",
-    answer: { title: "Go Your Own Way", artist: "Fleetwood Mac" },
-    wrong: [
-      { title: "Dreams", artist: "Fleetwood Mac" },
-      { title: "The Chain", artist: "Fleetwood Mac" },
-      { title: "Don't Stop", artist: "Fleetwood Mac" }
-    ]
-  },
-  {
-    clue: "This 2012 Gotye song about a failed relationship features Kimbra on vocals and won three Grammy Awards including Record of the Year.",
-    answer: { title: "Somebody That I Used to Know", artist: "Gotye" },
-    wrong: [
-      { title: "Royals", artist: "Lorde" },
-      { title: "Pumped Up Kicks", artist: "Foster the People" },
-      { title: "Ho Hey", artist: "The Lumineers" }
-    ]
-  },
-  {
-    clue: "Elvis Presley's 1956 rock and roll classic was considered scandalous at the time for its suggestive dancing, leading TV cameras to only film him from the waist up.",
-    answer: { title: "Hound Dog", artist: "Elvis Presley" },
-    wrong: [
-      { title: "Jailhouse Rock", artist: "Elvis Presley" },
-      { title: "Johnny B. Goode", artist: "Chuck Berry" },
-      { title: "Tutti Frutti", artist: "Little Richard" }
-    ]
-  },
-  {
-    clue: "Bob Marley's 1977 reggae anthem about resilience and survival became an international symbol of resistance and freedom across the developing world.",
-    answer: { title: "Jamming", artist: "Bob Marley" },
-    wrong: [
-      { title: "One Love", artist: "Bob Marley" },
-      { title: "No Woman, No Cry", artist: "Bob Marley" },
-      { title: "Buffalo Soldier", artist: "Bob Marley" }
-    ]
-  },
-  {
-    clue: "Beyonce's 2008 up-tempo track became an anthem for female independence. Its music video features one of the most iconic choreographies in pop music history.",
-    answer: { title: "Single Ladies (Put a Ring on It)", artist: "Beyonce" },
-    wrong: [
-      { title: "Crazy in Love", artist: "Beyonce" },
-      { title: "Halo", artist: "Beyonce" },
-      { title: "Irreplaceable", artist: "Beyonce" }
-    ]
-  },
-  {
-    clue: "This 1980 John Lennon song was released just weeks before his death and is considered one of the greatest songs ever written. It imagines a world without borders or religion.",
-    answer: { title: "Imagine", artist: "John Lennon" },
-    wrong: [
-      { title: "Let It Be", artist: "The Beatles" },
-      { title: "What a Wonderful World", artist: "Louis Armstrong" },
-      { title: "Bridge Over Troubled Water", artist: "Simon & Garfunkel" }
-    ]
-  },
-  {
-    clue: "Daft Punk's 2013 collaboration with Pharrell Williams and Nile Rodgers brought disco-funk back to mainstream pop and won Record of the Year at the Grammys.",
-    answer: { title: "Get Lucky", artist: "Daft Punk" },
-    wrong: [
-      { title: "Blurred Lines", artist: "Robin Thicke" },
-      { title: "Happy", artist: "Pharrell Williams" },
-      { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars" }
-    ]
-  },
-  {
-    clue: "This 1997 Radiohead track opens their OK Computer album with anxious lyrics about modern life and features Thom Yorke's falsetto over cascading guitar arpeggios.",
-    answer: { title: "Paranoid Android", artist: "Radiohead" },
-    wrong: [
-      { title: "Creep", artist: "Radiohead" },
-      { title: "Karma Police", artist: "Radiohead" },
-      { title: "No Surprises", artist: "Radiohead" }
-    ]
-  },
-  {
-    clue: "Taylor Swift's 2014 pop anthem about ignoring critics became her first number-one single on the Hot 100 and marked her full transition from country to pop music.",
-    answer: { title: "Shake It Off", artist: "Taylor Swift" },
-    wrong: [
-      { title: "Blank Space", artist: "Taylor Swift" },
-      { title: "Bad Blood", artist: "Taylor Swift" },
-      { title: "22", artist: "Taylor Swift" }
-    ]
-  },
-  {
-    clue: "This 1969 Rolling Stones song was inspired by events at a Hells Angels-guarded concert. It is noted for its dark, ominous lyrics and samba-influenced percussion.",
-    answer: { title: "Gimme Shelter", artist: "The Rolling Stones" },
-    wrong: [
-      { title: "Sympathy for the Devil", artist: "The Rolling Stones" },
-      { title: "Paint It Black", artist: "The Rolling Stones" },
-      { title: "Satisfaction", artist: "The Rolling Stones" }
-    ]
-  },
-  {
-    clue: "Billie Eilish recorded this 2019 Grammy-winning song with her brother Finneas in their childhood bedroom. It became the first Bond theme to win an Oscar.",
-    answer: { title: "Bad Guy", artist: "Billie Eilish" },
-    wrong: [
-      { title: "Ocean Eyes", artist: "Billie Eilish" },
-      { title: "Lovely", artist: "Billie Eilish" },
-      { title: "Bury a Friend", artist: "Billie Eilish" }
-    ]
-  },
-  {
-    clue: "This 2004 Green Day rock opera single criticizes media manipulation and became an anthem of political protest during the Iraq War era.",
-    answer: { title: "American Idiot", artist: "Green Day" },
-    wrong: [
-      { title: "Boulevard of Broken Dreams", artist: "Green Day" },
-      { title: "Holiday", artist: "Green Day" },
-      { title: "Basket Case", artist: "Green Day" }
-    ]
-  },
-  {
-    clue: "Drake's 2015 hit blends hip-hop with Caribbean dancehall rhythms and was partly inspired by the TV show Catfish. It topped charts worldwide for months.",
-    answer: { title: "Hotline Bling", artist: "Drake" },
-    wrong: [
-      { title: "One Dance", artist: "Drake" },
-      { title: "God's Plan", artist: "Drake" },
-      { title: "In My Feelings", artist: "Drake" }
-    ]
-  },
-  {
-    clue: "Aretha Franklin's 1967 cover of an Otis Redding song became a feminist and civil rights anthem. She changed the spelling in her iconic version.",
-    answer: { title: "Respect", artist: "Aretha Franklin" },
-    wrong: [
-      { title: "Think", artist: "Aretha Franklin" },
-      { title: "Chain of Fools", artist: "Aretha Franklin" },
-      { title: "(Sittin' On) The Dock of the Bay", artist: "Otis Redding" }
-    ]
-  },
-  {
-    clue: "This 2019 Lil Nas X country-trap crossover was initially removed from Billboard's country chart, sparking a genre debate. A Billy Ray Cyrus remix went viral.",
-    answer: { title: "Old Town Road", artist: "Lil Nas X" },
-    wrong: [
-      { title: "Panini", artist: "Lil Nas X" },
-      { title: "Sunflower", artist: "Post Malone" },
-      { title: "Mo Bamba", artist: "Sheck Wes" }
-    ]
-  },
-  {
-    clue: "David Bowie's 1969 single was released to coincide with the Apollo 11 moon landing and tells the story of an astronaut named Major Tom who becomes lost in space.",
-    answer: { title: "Space Oddity", artist: "David Bowie" },
-    wrong: [
-      { title: "Starman", artist: "David Bowie" },
-      { title: "Life on Mars?", artist: "David Bowie" },
-      { title: "Rocket Man", artist: "Elton John" }
-    ]
-  },
-  {
-    clue: "This 1991 R.E.M. song uses a mandolin riff and was inspired by a dream Michael Stipe had. Its title references losing one's religion as a Southern expression for being upset.",
-    answer: { title: "Losing My Religion", artist: "R.E.M." },
-    wrong: [
-      { title: "Everybody Hurts", artist: "R.E.M." },
-      { title: "Man on the Moon", artist: "R.E.M." },
-      { title: "Shiny Happy People", artist: "R.E.M." }
-    ]
-  },
-  {
-    clue: "Rihanna's 2007 pop anthem with its unforgettable 'ella, ella' hook was produced by Jay-Z and became a worldwide chart-topping hit during a rainy New York session.",
-    answer: { title: "Umbrella", artist: "Rihanna" },
-    wrong: [
-      { title: "We Found Love", artist: "Rihanna" },
-      { title: "Diamonds", artist: "Rihanna" },
-      { title: "Don't Stop the Music", artist: "Rihanna" }
-    ]
-  },
-  {
-    clue: "This 1976 Eagles classic was inspired by the excess of the California music industry. Don Henley described it as a journey from innocence to experience.",
-    answer: { title: "Hotel California", artist: "Eagles" },
-    wrong: [
-      { title: "Take It Easy", artist: "Eagles" },
-      { title: "Desperado", artist: "Eagles" },
-      { title: "Free Bird", artist: "Lynyrd Skynyrd" }
-    ]
-  },
-  {
-    clue: "Kendrick Lamar's 2017 Pulitzer Prize-winning album features this single with a music video set in a DNA testing facility, exploring themes of heritage and identity.",
-    answer: { title: "DNA.", artist: "Kendrick Lamar" },
-    wrong: [
-      { title: "HUMBLE.", artist: "Kendrick Lamar" },
-      { title: "Alright", artist: "Kendrick Lamar" },
-      { title: "LOYALTY.", artist: "Kendrick Lamar" }
-    ]
-  },
-  {
-    clue: "Stevie Wonder's 1972 funk classic features a signature clavinet riff and was inspired by his belief that superstition is irrational but deeply human.",
-    answer: { title: "Superstition", artist: "Stevie Wonder" },
-    wrong: [
-      { title: "Sir Duke", artist: "Stevie Wonder" },
-      { title: "Isn't She Lovely", artist: "Stevie Wonder" },
-      { title: "Higher Ground", artist: "Stevie Wonder" }
-    ]
-  },
-  {
-    clue: "This 2011 Carly Rae Jepsen pop earworm went viral when Justin Bieber tweeted about it. Its simple hook made it one of the catchiest songs of the decade.",
-    answer: { title: "Call Me Maybe", artist: "Carly Rae Jepsen" },
-    wrong: [
-      { title: "Somebody That I Used to Know", artist: "Gotye" },
-      { title: "We Are Young", artist: "fun." },
-      { title: "Payphone", artist: "Maroon 5" }
-    ]
-  },
-  {
-    clue: "AC/DC's 1980 hard rock anthem was the lead single from Back in Black, their first album with new vocalist Brian Johnson after Bon Scott's passing.",
-    answer: { title: "Back in Black", artist: "AC/DC" },
-    wrong: [
-      { title: "Highway to Hell", artist: "AC/DC" },
-      { title: "Thunderstruck", artist: "AC/DC" },
-      { title: "You Shook Me All Night Long", artist: "AC/DC" }
-    ]
-  },
-  {
-    clue: "Lady Gaga's 2009 electro-pop hit references Alfred Hitchcock and features a catchy telephone-inspired hook. Its music video set new standards for pop visual storytelling.",
-    answer: { title: "Poker Face", artist: "Lady Gaga" },
-    wrong: [
-      { title: "Bad Romance", artist: "Lady Gaga" },
-      { title: "Just Dance", artist: "Lady Gaga" },
-      { title: "Born This Way", artist: "Lady Gaga" }
-    ]
-  },
-  {
-    clue: "This 1975 Bruce Springsteen anthem about escape from small-town life became a defining song of working-class American rock and a concert staple for decades.",
-    answer: { title: "Born to Run", artist: "Bruce Springsteen" },
-    wrong: [
-      { title: "Thunder Road", artist: "Bruce Springsteen" },
-      { title: "Dancing in the Dark", artist: "Bruce Springsteen" },
-      { title: "Glory Days", artist: "Bruce Springsteen" }
-    ]
-  },
-  {
-    clue: "SZA's 2017 R&B hit about a complicated on-and-off relationship became a sleeper hit, eventually reaching platinum status and becoming a defining song of modern R&B.",
-    answer: { title: "Love Galore", artist: "SZA" },
-    wrong: [
-      { title: "Good Days", artist: "SZA" },
-      { title: "Kiss Me More", artist: "Doja Cat ft. SZA" },
-      { title: "The Weekend", artist: "SZA" }
-    ]
-  },
-  {
-    clue: "This 1979 The Clash punk anthem questions whether the narrator should remain in a difficult situation. It became a punk rock standard and political rallying cry.",
-    answer: { title: "Should I Stay or Should I Go", artist: "The Clash" },
-    wrong: [
-      { title: "London Calling", artist: "The Clash" },
-      { title: "Rock the Casbah", artist: "The Clash" },
-      { title: "Anarchy in the U.K.", artist: "Sex Pistols" }
-    ]
-  },
-  {
-    clue: "Ed Sheeran's 2017 tropical-pop love song was written on a marimba and became the fastest song to reach one billion Spotify streams at the time.",
-    answer: { title: "Shape of You", artist: "Ed Sheeran" },
-    wrong: [
-      { title: "Thinking Out Loud", artist: "Ed Sheeran" },
-      { title: "Perfect", artist: "Ed Sheeran" },
-      { title: "Photograph", artist: "Ed Sheeran" }
-    ]
-  },
-  {
-    clue: "This 1987 U2 rock anthem was inspired by the Troubles in Northern Ireland. Its opening guitar riff is one of the most recognizable in rock history.",
-    answer: { title: "Where the Streets Have No Name", artist: "U2" },
-    wrong: [
-      { title: "With or Without You", artist: "U2" },
-      { title: "One", artist: "U2" },
-      { title: "Sunday Bloody Sunday", artist: "U2" }
-    ]
-  },
-  {
-    clue: "Pharrell Williams' 2013 feel-good anthem was featured in the Despicable Me 2 soundtrack and became a global phenomenon, inspiring dance videos worldwide.",
-    answer: { title: "Happy", artist: "Pharrell Williams" },
-    wrong: [
-      { title: "Get Lucky", artist: "Daft Punk" },
-      { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars" },
-      { title: "Can't Stop the Feeling!", artist: "Justin Timberlake" }
-    ]
-  },
-  {
-    clue: "This 2003 Beyonce and Jay-Z collaboration marked the beginning of music's most powerful couple. Its horn section and Beyonce's 'uh oh' hook dominated summer radio.",
-    answer: { title: "Crazy in Love", artist: "Beyonce ft. Jay-Z" },
-    wrong: [
-      { title: "Single Ladies", artist: "Beyonce" },
-      { title: "Baby Boy", artist: "Beyonce" },
-      { title: "Drunk in Love", artist: "Beyonce ft. Jay-Z" }
-    ]
-  },
-  {
-    clue: "Amy Winehouse's 2006 jazz-soul single about refusing to enter rehabilitation was darkly prophetic. It won her a Grammy and became her signature song.",
-    answer: { title: "Rehab", artist: "Amy Winehouse" },
-    wrong: [
-      { title: "Back to Black", artist: "Amy Winehouse" },
-      { title: "Valerie", artist: "Amy Winehouse" },
-      { title: "Love Is a Losing Game", artist: "Amy Winehouse" }
-    ]
-  },
-  {
-    clue: "Post Malone's 2018 hit blends hip-hop with rock guitar and introspective themes. It spent months in the top 5 and cemented his genre-blending style.",
-    answer: { title: "Rockstar", artist: "Post Malone ft. 21 Savage" },
-    wrong: [
-      { title: "Circles", artist: "Post Malone" },
-      { title: "Sunflower", artist: "Post Malone" },
-      { title: "Congratulations", artist: "Post Malone" }
-    ]
-  },
-  {
-    clue: "This 1983 Eurythmics synth-pop classic opens with that unforgettable synth riff. Annie Lennox's androgynous look in the video challenged gender norms in pop music.",
-    answer: { title: "Sweet Dreams (Are Made of This)", artist: "Eurythmics" },
-    wrong: [
-      { title: "Take On Me", artist: "a-ha" },
-      { title: "Tainted Love", artist: "Soft Cell" },
-      { title: "Blue Monday", artist: "New Order" }
-    ]
-  }
-];
+const $ = id => document.getElementById(id);
+
+const el = {
+  // screens
+  loading: $('screen-loading'),
+  signup: $('screen-signup'),
+  checkemail: $('screen-checkemail'),
+  signin: $('screen-signin'),
+  app: $('screen-app'),
+  // auth
+  signupForm: $('signup-form'),
+  signupUser: $('signup-username'),
+  signupEmail: $('signup-email'),
+  signupPass: $('signup-password'),
+  signupErr: $('signup-error'),
+  signinForm: $('signin-form'),
+  signinEmail: $('signin-email'),
+  signinPass: $('signin-password'),
+  signinErr: $('signin-error'),
+  confirmAddr: $('confirm-email-addr'),
+  linkSignin: $('link-signin'),
+  linkSignup: $('link-signup'),
+  btnGoSignin: $('btn-go-signin'),
+  // nav
+  navUser: $('nav-user'),
+  btnLogout: $('btn-logout'),
+  // panels
+  panelPlay: $('panel-play'),
+  panelRank: $('panel-rank'),
+  panelStats: $('panel-stats'),
+  // views
+  viewMenu: $('view-menu'),
+  viewGame: $('view-game'),
+  viewFeedback: $('view-feedback'),
+  viewOver: $('view-over'),
+  // menu
+  btnStart: $('btn-start'),
+  msPlayed: $('ms-played'),
+  msPts: $('ms-pts'),
+  msStreak: $('ms-streak'),
+  // game
+  hudRound: $('hud-round'),
+  hudScore: $('hud-score'),
+  hudStreak: $('hud-streak'),
+  timerFill: $('timer-fill'),
+  timerSec: $('timer-sec'),
+  clueText: $('clue-text'),
+  choices: $('choices'),
+  // feedback
+  fbIcon: $('fb-icon'),
+  fbTitle: $('fb-title'),
+  fbDetail: $('fb-detail'),
+  fbPoints: $('fb-points'),
+  btnNext: $('btn-next'),
+  // over
+  overPts: $('over-pts'),
+  overCorrect: $('over-correct'),
+  overStreak: $('over-streak'),
+  overAvg: $('over-avg'),
+  btnAgain: $('btn-again'),
+  // rankings
+  lbList: $('lb-list'),
+  // stats
+  stPlayed: $('st-played'),
+  stPts: $('st-pts'),
+  stAcc: $('st-acc'),
+  stStreak: $('st-streak'),
+};
 
 // ========================================
 // STATE
 // ========================================
 let currentUser = null;
-let currentUsername = '';
-let currentTab = 'play';
-let gameState = null;
+let username = '';
+let round = 0;
+let score = 0;
+let streak = 0;
+let bestStreak = 0;
+let correctCount = 0;
+let totalTime = 0;
 let timerInterval = null;
-let leaderboardSort = 'total_points';
+let timeLeft = 15;
+let answered = false;
+let roundQuestions = [];
+let currentSort = 'total_points';
 
-const DIFFICULTY = {
-  normal: { label: 'Normal', time: 15 },
-  hard: { label: 'Hard', time: 10 },
-  blitz: { label: 'Blitz', time: 5 }
-};
+const TOTAL_ROUNDS = 10;
+const ROUND_TIME = 15;
 
-const BASE_POINTS = 100;
-const STREAK_BONUS = 25;
-const TIME_BONUS_MULTIPLIER = 10;
-const ROUNDS_PER_GAME = 10;
+// ========================================
+// SONG DATABASE (50 songs)
+// ========================================
+const SONGS = [
+  { clue: "This 1977 Bee Gees disco anthem was written for the Saturday Night Fever soundtrack and became one of the best-selling singles of all time.", answer: { title: "Stayin' Alive", artist: "Bee Gees" }, wrong: [{ title: "Disco Inferno", artist: "The Trammps" }, { title: "Le Freak", artist: "Chic" }, { title: "I Will Survive", artist: "Gloria Gaynor" }] },
+  { clue: "Queen's 1975 rock opera masterpiece features operatic sections, a piano ballad intro, and a hard rock finale. It held the UK number one spot for nine weeks.", answer: { title: "Bohemian Rhapsody", artist: "Queen" }, wrong: [{ title: "Stairway to Heaven", artist: "Led Zeppelin" }, { title: "Hotel California", artist: "Eagles" }, { title: "November Rain", artist: "Guns N' Roses" }] },
+  { clue: "Michael Jackson's 1982 hit features a spoken-word horror monologue by Vincent Price and a groundbreaking zombie dance music video directed by John Landis.", answer: { title: "Thriller", artist: "Michael Jackson" }, wrong: [{ title: "Ghostbusters", artist: "Ray Parker Jr." }, { title: "Superstition", artist: "Stevie Wonder" }, { title: "Beat It", artist: "Michael Jackson" }] },
+  { clue: "This 2015 Bruno Mars and Mark Ronson collaboration pays tribute to 1980s funk and features a bass line inspired by Zapp & Roger.", answer: { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars" }, wrong: [{ title: "Happy", artist: "Pharrell Williams" }, { title: "Get Lucky", artist: "Daft Punk" }, { title: "Treasure", artist: "Bruno Mars" }] },
+  { clue: "Nirvana's 1991 grunge anthem from the Nevermind album is credited with bringing alternative rock into the mainstream and ending the hair metal era.", answer: { title: "Smells Like Teen Spirit", artist: "Nirvana" }, wrong: [{ title: "Alive", artist: "Pearl Jam" }, { title: "Black Hole Sun", artist: "Soundgarden" }, { title: "Creep", artist: "Radiohead" }] },
+  { clue: "Adele's 2011 breakup ballad won six Grammy Awards and spent years on the charts. The title references her age when the relationship began.", answer: { title: "Rolling in the Deep", artist: "Adele" }, wrong: [{ title: "Someone Like You", artist: "Adele" }, { title: "Stay", artist: "Rihanna" }, { title: "Jar of Hearts", artist: "Christina Perri" }] },
+  { clue: "This 1985 charity single was written by Michael Jackson and Lionel Richie and recorded by a supergroup of 46 artists to raise funds for African famine relief.", answer: { title: "We Are the World", artist: "USA for Africa" }, wrong: [{ title: "Do They Know It's Christmas?", artist: "Band Aid" }, { title: "Heal the World", artist: "Michael Jackson" }, { title: "Imagine", artist: "John Lennon" }] },
+  { clue: "The Weeknd's 2019 synth-pop hit features an iconic synthesizer riff and a music video set in Las Vegas. It spent a record 57 weeks in the Billboard top 10.", answer: { title: "Blinding Lights", artist: "The Weeknd" }, wrong: [{ title: "Starboy", artist: "The Weeknd" }, { title: "Save Your Tears", artist: "The Weeknd" }, { title: "Levitating", artist: "Dua Lipa" }] },
+  { clue: "Whitney Houston's 1992 power ballad from The Bodyguard soundtrack became one of the best-selling singles ever. It was originally written by Dolly Parton in 1973.", answer: { title: "I Will Always Love You", artist: "Whitney Houston" }, wrong: [{ title: "Greatest Love of All", artist: "Whitney Houston" }, { title: "My Heart Will Go On", artist: "Celine Dion" }, { title: "Unchained Melody", artist: "Righteous Brothers" }] },
+  { clue: "This 2017 Luis Fonsi and Daddy Yankee reggaeton hit became the first Spanish-language song to reach number one on the Billboard Hot 100 since Macarena.", answer: { title: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee" }, wrong: [{ title: "Bailando", artist: "Enrique Iglesias" }, { title: "Mi Gente", artist: "J Balvin" }, { title: "Hips Don't Lie", artist: "Shakira" }] },
+  { clue: "Led Zeppelin's 1971 epic is one of the most requested songs in radio history despite never being released as a single. It builds from acoustic folk to hard rock.", answer: { title: "Stairway to Heaven", artist: "Led Zeppelin" }, wrong: [{ title: "Free Bird", artist: "Lynyrd Skynyrd" }, { title: "Comfortably Numb", artist: "Pink Floyd" }, { title: "Bohemian Rhapsody", artist: "Queen" }] },
+  { clue: "This 2003 Outkast hit blends funk, rock, and hip-hop. Its famous lyric prompted Polaroid to issue a statement about their cameras.", answer: { title: "Hey Ya!", artist: "Outkast" }, wrong: [{ title: "Crazy in Love", artist: "Beyonce" }, { title: "Yeah!", artist: "Usher" }, { title: "In Da Club", artist: "50 Cent" }] },
+  { clue: "Dolly Parton wrote this 1973 country classic about a beautiful woman she feared would steal her husband. It was famously covered by Whitney Houston for a film.", answer: { title: "Jolene", artist: "Dolly Parton" }, wrong: [{ title: "9 to 5", artist: "Dolly Parton" }, { title: "Stand By Your Man", artist: "Tammy Wynette" }, { title: "Crazy", artist: "Patsy Cline" }] },
+  { clue: "Eminem's 2000 track tells the story of an obsessed fan who writes increasingly disturbing letters. The fan's name became slang for overly devoted followers.", answer: { title: "Stan", artist: "Eminem" }, wrong: [{ title: "Lose Yourself", artist: "Eminem" }, { title: "The Real Slim Shady", artist: "Eminem" }, { title: "Changes", artist: "2Pac" }] },
+  { clue: "This 1984 Prince song was the lead single from the Purple Rain album. It features a synthesizer-driven arrangement and themes of apocalyptic celebration.", answer: { title: "When Doves Cry", artist: "Prince" }, wrong: [{ title: "Purple Rain", artist: "Prince" }, { title: "Kiss", artist: "Prince" }, { title: "1999", artist: "Prince" }] },
+  { clue: "Released in 1994, this TLC hit addresses themes of safe relationships and became the best-selling single by an American girl group at the time.", answer: { title: "Waterfalls", artist: "TLC" }, wrong: [{ title: "No Scrubs", artist: "TLC" }, { title: "Wannabe", artist: "Spice Girls" }, { title: "Bills, Bills, Bills", artist: "Destiny's Child" }] },
+  { clue: "Fleetwood Mac's 1977 song from the Rumours album was written by Lindsey Buckingham about his breakup with Stevie Nicks while they continued working together.", answer: { title: "Go Your Own Way", artist: "Fleetwood Mac" }, wrong: [{ title: "Dreams", artist: "Fleetwood Mac" }, { title: "The Chain", artist: "Fleetwood Mac" }, { title: "Don't Stop", artist: "Fleetwood Mac" }] },
+  { clue: "This 2012 Gotye song about a failed relationship features Kimbra on vocals and won three Grammy Awards including Record of the Year.", answer: { title: "Somebody That I Used to Know", artist: "Gotye" }, wrong: [{ title: "Royals", artist: "Lorde" }, { title: "Pumped Up Kicks", artist: "Foster the People" }, { title: "Ho Hey", artist: "The Lumineers" }] },
+  { clue: "Elvis Presley's 1956 rock and roll classic was considered scandalous for its suggestive dancing, leading TV cameras to only film him from the waist up.", answer: { title: "Hound Dog", artist: "Elvis Presley" }, wrong: [{ title: "Jailhouse Rock", artist: "Elvis Presley" }, { title: "Johnny B. Goode", artist: "Chuck Berry" }, { title: "Tutti Frutti", artist: "Little Richard" }] },
+  { clue: "Bob Marley's 1977 reggae anthem about resilience became an international symbol of resistance and freedom across the developing world.", answer: { title: "Jamming", artist: "Bob Marley" }, wrong: [{ title: "One Love", artist: "Bob Marley" }, { title: "No Woman, No Cry", artist: "Bob Marley" }, { title: "Buffalo Soldier", artist: "Bob Marley" }] },
+  { clue: "Beyonce's 2008 up-tempo track became an anthem for female independence. Its music video features one of the most iconic choreographies in pop history.", answer: { title: "Single Ladies", artist: "Beyonce" }, wrong: [{ title: "Crazy in Love", artist: "Beyonce" }, { title: "Halo", artist: "Beyonce" }, { title: "Irreplaceable", artist: "Beyonce" }] },
+  { clue: "This 1980 John Lennon song was released just weeks before his death. It imagines a world without borders or religion and is considered one of the greatest songs ever.", answer: { title: "Imagine", artist: "John Lennon" }, wrong: [{ title: "Let It Be", artist: "The Beatles" }, { title: "What a Wonderful World", artist: "Louis Armstrong" }, { title: "Bridge Over Troubled Water", artist: "Simon & Garfunkel" }] },
+  { clue: "Daft Punk's 2013 collaboration with Pharrell Williams and Nile Rodgers became the song of the summer with its disco-funk groove and won Record of the Year.", answer: { title: "Get Lucky", artist: "Daft Punk" }, wrong: [{ title: "Around the World", artist: "Daft Punk" }, { title: "Happy", artist: "Pharrell Williams" }, { title: "Uptown Funk", artist: "Bruno Mars" }] },
+  { clue: "This 1975 Bruce Springsteen anthem about escaping small-town life became one of rock's greatest songs. The title character waits on the highway.", answer: { title: "Born to Run", artist: "Bruce Springsteen" }, wrong: [{ title: "Thunder Road", artist: "Bruce Springsteen" }, { title: "Dancing in the Dark", artist: "Bruce Springsteen" }, { title: "American Pie", artist: "Don McLean" }] },
+  { clue: "Released in 2011, this Gotye and Kimbra duet spent eight weeks at number one in the US and became one of the most viral hits of the early streaming era.", answer: { title: "Somebody That I Used to Know", artist: "Gotye" }, wrong: [{ title: "Call Me Maybe", artist: "Carly Rae Jepsen" }, { title: "We Found Love", artist: "Rihanna" }, { title: "Moves Like Jagger", artist: "Maroon 5" }] },
+  { clue: "Taylor Swift's 2014 pop anthem marked her transition from country to pop and became the first song to sell over one million digital copies in a single week.", answer: { title: "Shake It Off", artist: "Taylor Swift" }, wrong: [{ title: "Blank Space", artist: "Taylor Swift" }, { title: "Bad Blood", artist: "Taylor Swift" }, { title: "Roar", artist: "Katy Perry" }] },
+  { clue: "A-ha's 1985 synth-pop hit is famous for its groundbreaking pencil-sketch animation music video that blended live action with rotoscoping.", answer: { title: "Take On Me", artist: "A-ha" }, wrong: [{ title: "Everybody Wants to Rule the World", artist: "Tears for Fears" }, { title: "Don't You (Forget About Me)", artist: "Simple Minds" }, { title: "Tainted Love", artist: "Soft Cell" }] },
+  { clue: "This 1994 Coolio song samples Stevie Wonder's Pastime Paradise and won the Grammy for Best Rap Solo Performance. It was featured in the movie Dangerous Minds.", answer: { title: "Gangsta's Paradise", artist: "Coolio" }, wrong: [{ title: "California Love", artist: "2Pac" }, { title: "Nuthin' but a 'G' Thang", artist: "Dr. Dre" }, { title: "Jump Around", artist: "House of Pain" }] },
+  { clue: "Pharrell's 2013 feel-good anthem was featured in Despicable Me 2 and spent 10 weeks at number one on the Billboard Hot 100.", answer: { title: "Happy", artist: "Pharrell Williams" }, wrong: [{ title: "Get Lucky", artist: "Daft Punk" }, { title: "Can't Stop the Feeling!", artist: "Justin Timberlake" }, { title: "Uptown Funk", artist: "Bruno Mars" }] },
+  { clue: "The Eagles' 1977 classic about a mysterious luxury hotel became one of the greatest rock songs ever. Its guitar solo is considered one of the best of all time.", answer: { title: "Hotel California", artist: "Eagles" }, wrong: [{ title: "Stairway to Heaven", artist: "Led Zeppelin" }, { title: "Bohemian Rhapsody", artist: "Queen" }, { title: "Free Bird", artist: "Lynyrd Skynyrd" }] },
+  { clue: "Billie Eilish's 2019 James Bond theme was written with her brother Finneas and won the Academy Award for Best Original Song. She was the youngest Bond theme artist.", answer: { title: "No Time to Die", artist: "Billie Eilish" }, wrong: [{ title: "Bad Guy", artist: "Billie Eilish" }, { title: "Skyfall", artist: "Adele" }, { title: "Writing's on the Wall", artist: "Sam Smith" }] },
+  { clue: "Drake's 2018 dancehall-influenced track features a viral dance challenge that took over social media and became the first song to debut at number one on the Hot 100.", answer: { title: "In My Feelings", artist: "Drake" }, wrong: [{ title: "God's Plan", artist: "Drake" }, { title: "Hotline Bling", artist: "Drake" }, { title: "One Dance", artist: "Drake" }] },
+  { clue: "This 2019 Lil Nas X country-trap crossover broke the record for most weeks at number one on the Billboard Hot 100 and sparked a genre debate.", answer: { title: "Old Town Road", artist: "Lil Nas X" }, wrong: [{ title: "Sunflower", artist: "Post Malone" }, { title: "Bad Guy", artist: "Billie Eilish" }, { title: "Sicko Mode", artist: "Travis Scott" }] },
+  { clue: "Ed Sheeran's 2017 romantic ballad was written for his future wife Cherry Seaborn and became the most-streamed song on Spotify at the time.", answer: { title: "Shape of You", artist: "Ed Sheeran" }, wrong: [{ title: "Perfect", artist: "Ed Sheeran" }, { title: "Thinking Out Loud", artist: "Ed Sheeran" }, { title: "Love Yourself", artist: "Justin Bieber" }] },
+  { clue: "Rihanna's 2007 hit with its dark electropop production became a defining song of the late 2000s and won the Grammy for Best Dance Recording.", answer: { title: "Umbrella", artist: "Rihanna" }, wrong: [{ title: "Disturbia", artist: "Rihanna" }, { title: "We Found Love", artist: "Rihanna" }, { title: "SOS", artist: "Rihanna" }] },
+  { clue: "Marvin Gaye's 1971 politically charged album title track addressed the Vietnam War and social injustice. Motown initially refused to release it.", answer: { title: "What's Going On", artist: "Marvin Gaye" }, wrong: [{ title: "Let's Get It On", artist: "Marvin Gaye" }, { title: "A Change Is Gonna Come", artist: "Sam Cooke" }, { title: "Respect", artist: "Aretha Franklin" }] },
+  { clue: "Stevie Wonder's 1972 funk classic features a clavinet riff that is one of the most recognizable in music history. It was inspired by his daughter Aisha.", answer: { title: "Superstition", artist: "Stevie Wonder" }, wrong: [{ title: "Sir Duke", artist: "Stevie Wonder" }, { title: "Isn't She Lovely", artist: "Stevie Wonder" }, { title: "I Wish", artist: "Stevie Wonder" }] },
+  { clue: "Aretha Franklin's 1967 version of this Otis Redding song became a feminist anthem and is ranked as one of the greatest songs of all time by Rolling Stone.", answer: { title: "Respect", artist: "Aretha Franklin" }, wrong: [{ title: "Natural Woman", artist: "Aretha Franklin" }, { title: "Think", artist: "Aretha Franklin" }, { title: "I Say a Little Prayer", artist: "Aretha Franklin" }] },
+  { clue: "This 2010 Cee Lo Green soul song uses a more explicit title in its original version. It became a viral sensation and earned a Grammy nomination.", answer: { title: "Forget You", artist: "Cee Lo Green" }, wrong: [{ title: "Happy", artist: "Pharrell Williams" }, { title: "Treasure", artist: "Bruno Mars" }, { title: "Valerie", artist: "Mark Ronson ft. Amy Winehouse" }] },
+  { clue: "Green Day's 2004 rock opera single criticizes media manipulation and American politics. The album American Idiot later became a hit Broadway musical.", answer: { title: "Boulevard of Broken Dreams", artist: "Green Day" }, wrong: [{ title: "American Idiot", artist: "Green Day" }, { title: "Welcome to the Black Parade", artist: "My Chemical Romance" }, { title: "Mr. Brightside", artist: "The Killers" }] },
+  { clue: "The Killers' 2003 debut single has spent more time on the UK charts than any other song in history, re-entering the charts almost every year.", answer: { title: "Mr. Brightside", artist: "The Killers" }, wrong: [{ title: "Somebody Told Me", artist: "The Killers" }, { title: "Boulevard of Broken Dreams", artist: "Green Day" }, { title: "Take Me Out", artist: "Franz Ferdinand" }] },
+  { clue: "Amy Winehouse's 2006 song about refusing to enter rehabilitation won the Grammy for Record of the Year. Its raw honesty made it her signature track.", answer: { title: "Rehab", artist: "Amy Winehouse" }, wrong: [{ title: "Back to Black", artist: "Amy Winehouse" }, { title: "Valerie", artist: "Amy Winehouse" }, { title: "You Know I'm No Good", artist: "Amy Winehouse" }] },
+  { clue: "Post Malone's 2019 collaboration with Swae Lee was featured in Spider-Man: Into the Spider-Verse and blends hip-hop with dreamy pop production.", answer: { title: "Sunflower", artist: "Post Malone & Swae Lee" }, wrong: [{ title: "Circles", artist: "Post Malone" }, { title: "Rockstar", artist: "Post Malone" }, { title: "Congratulations", artist: "Post Malone" }] },
+  { clue: "Kendrick Lamar's 2017 track features a kung fu-inspired music video and won the Pulitzer Prize as part of the DAMN album -- the first non-jazz or classical work to do so.", answer: { title: "HUMBLE.", artist: "Kendrick Lamar" }, wrong: [{ title: "Alright", artist: "Kendrick Lamar" }, { title: "DNA.", artist: "Kendrick Lamar" }, { title: "SICKO MODE", artist: "Travis Scott" }] },
+  { clue: "Lady Gaga's 2009 dance-pop anthem features a catchy telephone-inspired hook and was one of the first songs to reach one billion views on YouTube.", answer: { title: "Poker Face", artist: "Lady Gaga" }, wrong: [{ title: "Bad Romance", artist: "Lady Gaga" }, { title: "Just Dance", artist: "Lady Gaga" }, { title: "Born This Way", artist: "Lady Gaga" }] },
+  { clue: "The Chainsmokers and Halsey's 2016 indie-pop crossover hit about two young lovers who can't be together topped charts in over 20 countries.", answer: { title: "Closer", artist: "The Chainsmokers ft. Halsey" }, wrong: [{ title: "Something Just Like This", artist: "The Chainsmokers" }, { title: "Don't Let Me Down", artist: "The Chainsmokers" }, { title: "Roses", artist: "The Chainsmokers" }] },
+  { clue: "Toto's 1982 soft rock classic about a man longing for a continent won the Record of the Year Grammy and experienced a massive revival via internet memes in the 2010s.", answer: { title: "Africa", artist: "Toto" }, wrong: [{ title: "Rosanna", artist: "Toto" }, { title: "Everybody Wants to Rule the World", artist: "Tears for Fears" }, { title: "Eye of the Tiger", artist: "Survivor" }] },
+  { clue: "Cardi B's 2018 debut single made her the first female rapper to top the Hot 100 as a solo artist since Lauryn Hill in 1998. It samples a classic Peter Rodgers funk beat.", answer: { title: "Bodak Yellow", artist: "Cardi B" }, wrong: [{ title: "I Like It", artist: "Cardi B" }, { title: "WAP", artist: "Cardi B" }, { title: "Money", artist: "Cardi B" }] },
+  { clue: "Journey's 1981 power ballad has become the most-downloaded song from the 20th century on iTunes and is a staple at sporting events and karaoke bars worldwide.", answer: { title: "Don't Stop Believin'", artist: "Journey" }, wrong: [{ title: "Eye of the Tiger", artist: "Survivor" }, { title: "Livin' on a Prayer", artist: "Bon Jovi" }, { title: "Africa", artist: "Toto" }] },
+  { clue: "Dua Lipa's 2020 disco-pop anthem features a roller-skating music video and became one of the longest-running top 10 hits, boosted by a DaBaby remix.", answer: { title: "Levitating", artist: "Dua Lipa" }, wrong: [{ title: "Don't Start Now", artist: "Dua Lipa" }, { title: "Physical", artist: "Dua Lipa" }, { title: "Blinding Lights", artist: "The Weeknd" }] },
+];
+
+// ========================================
+// HELPERS
+// ========================================
+function show(elem) { if (elem) elem.classList.remove('hidden'); }
+function hide(elem) { if (elem) elem.classList.add('hidden'); }
+
+function showScreen(name) {
+  [el.loading, el.signup, el.checkemail, el.signin, el.app].forEach(s => hide(s));
+  const target = { loading: el.loading, signup: el.signup, checkemail: el.checkemail, signin: el.signin, app: el.app }[name];
+  if (target) show(target);
+}
+
+function showView(name) {
+  [el.viewMenu, el.viewGame, el.viewFeedback, el.viewOver].forEach(v => hide(v));
+  const target = { menu: el.viewMenu, game: el.viewGame, feedback: el.viewFeedback, over: el.viewOver }[name];
+  if (target) show(target);
+}
+
+function showPanel(name) {
+  [el.panelPlay, el.panelRank, el.panelStats].forEach(p => { if (p) p.classList.remove('active'); });
+  const target = { play: el.panelPlay, rank: el.panelRank, stats: el.panelStats }[name];
+  if (target) target.classList.add('active');
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let toastWrap;
+function toast(msg, type = 'info') {
+  if (!toastWrap) {
+    toastWrap = document.createElement('div');
+    toastWrap.className = 'toast-wrap';
+    document.body.appendChild(toastWrap);
+  }
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  toastWrap.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(100%)';
+    t.style.transition = 'all .3s';
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
+}
 
 // ========================================
 // INIT
 // ========================================
 try {
-  window.addEventListener('DOMContentLoaded', () => {
-    try {
-      bindAllEvents();
-      setTimeout(() => {
-        const ls = document.getElementById('loading-screen');
-        if (ls) ls.classList.add('hidden');
-        initAuth();
-      }, 2000);
-    } catch(e) { console.error('DOMContentLoaded error:', e.message, e.stack); }
-  });
-} catch(e) { console.error('Bootstrap error:', e.message, e.stack); }
-
-// ========================================
-// EVENT BINDINGS
-// ========================================
-function bindAllEvents() {
-  try {
-    // Auth
-    document.getElementById('signup-form').addEventListener('submit', handleSignUp);
-    document.getElementById('signin-form').addEventListener('submit', handleSignIn);
-    document.getElementById('go-signin').addEventListener('click', (e) => { e.preventDefault(); showAuth('signin'); });
-    document.getElementById('go-signup').addEventListener('click', (e) => { e.preventDefault(); showAuth('signup'); });
-    document.getElementById('go-signin-from-email').addEventListener('click', () => showAuth('signin'));
-    document.getElementById('btn-logout').addEventListener('click', handleLogout);
-
-    // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-    });
-
-    // Difficulty
-    document.querySelectorAll('.diff-btn').forEach(btn => {
-      btn.addEventListener('click', () => startGame(btn.dataset.diff));
-    });
-
-    // Leaderboard sort
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        leaderboardSort = btn.dataset.sort;
-        loadLeaderboard();
-      });
-    });
-  } catch(e) { console.error('Bind events error:', e.message, e.stack); }
+  setTimeout(() => {
+    hide(el.loading);
+    initAuth();
+  }, 1800);
+} catch (e) {
+  console.error('Init error:', e);
 }
 
-// ========================================
-// AUTH
-// ========================================
 async function initAuth() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       currentUser = user;
       await ensureAppUser(user);
-      showApp();
+      enterApp();
     } else {
-      showAuth('signup');
+      showScreen('signup');
     }
-  } catch(e) {
-    console.error('Auth check error:', e);
-    showAuth('signup');
+  } catch (e) {
+    console.error('Auth check:', e);
+    showScreen('signup');
   }
 }
 
-function showAuth(screen) {
-  document.getElementById('auth-container').classList.remove('hidden');
-  document.getElementById('app').classList.add('hidden');
-  document.getElementById('signup-screen').classList.add('hidden');
-  document.getElementById('signin-screen').classList.add('hidden');
-  document.getElementById('checkemail-screen').classList.add('hidden');
-  document.getElementById(screen + '-screen').classList.remove('hidden');
+// ========================================
+// AUTH
+// ========================================
+async function ensureAppUser(user, displayName) {
+  try {
+    const { data: existing } = await supabase.from(TB_USERS).select('*').eq('user_id', user.id).maybeSingle();
+    if (!existing) {
+      const name = displayName || user.user_metadata?.display_name || user.email.split('@')[0];
+      await supabase.from(TB_USERS).insert({ user_id: user.id, email: user.email, display_name: name });
+      username = name;
+      // Also ensure score row
+      await supabase.from(TB_SCORES).insert({ user_id: user.id, username: name, total_points: 0, games_played: 0, best_streak: 0, total_correct: 0, total_questions: 0 });
+    } else {
+      username = existing.display_name || user.email.split('@')[0];
+    }
+  } catch (e) {
+    console.error('ensureAppUser:', e);
+    username = user.email.split('@')[0];
+  }
 }
 
-async function handleSignUp(e) {
+// Sign Up
+el.signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const username = document.getElementById('signup-username').value.trim();
-  const email = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
-  const errEl = document.getElementById('signup-error');
-  errEl.classList.add('hidden');
-
-  if (!username || username.length < 2) {
-    errEl.textContent = 'Username must be at least 2 characters.';
-    errEl.classList.remove('hidden');
-    return;
-  }
+  const name = el.signupUser.value.trim();
+  const email = el.signupEmail.value.trim();
+  const pass = el.signupPass.value;
+  hide(el.signupErr);
 
   try {
     const { data, error } = await supabase.auth.signUp({
-      email, password,
+      email, password: pass,
       options: {
         emailRedirectTo: 'https://sling-gogiapp.web.app/email-confirmed.html',
-        data: { display_name: username }
+        data: { display_name: name }
       }
     });
-
     if (error) {
       if (error.message.includes('already') || error.message.includes('registered')) {
-        const { data: sid, error: sie } = await supabase.auth.signInWithPassword({ email, password });
-        if (sie) {
-          errEl.textContent = 'Incorrect password for existing account.';
-          errEl.classList.remove('hidden');
-          return;
-        }
-        currentUser = sid.user;
-        await ensureAppUser(sid.user, username);
-        showApp();
+        const { data: sd, error: se } = await supabase.auth.signInWithPassword({ email, password: pass });
+        if (se) { showErr(el.signupErr, 'Incorrect password for existing account.'); return; }
+        currentUser = sd.user;
+        await ensureAppUser(sd.user, name);
+        enterApp();
         return;
       }
-      errEl.textContent = error.message;
-      errEl.classList.remove('hidden');
+      showErr(el.signupErr, error.message);
       return;
     }
-
-    document.getElementById('confirm-email').textContent = email;
-    showAuth('checkemail');
-  } catch(e) {
-    errEl.textContent = 'Something went wrong. Try again.';
-    errEl.classList.remove('hidden');
+    el.confirmAddr.textContent = email;
+    username = name;
+    showScreen('checkemail');
+  } catch (e) {
+    showErr(el.signupErr, 'Something went wrong.');
   }
-}
+});
 
-async function handleSignIn(e) {
+// Sign In
+el.signinForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const email = document.getElementById('signin-email').value.trim();
-  const password = document.getElementById('signin-password').value;
-  const errEl = document.getElementById('signin-error');
-  errEl.classList.add('hidden');
+  const email = el.signinEmail.value.trim();
+  const pass = el.signinPass.value;
+  hide(el.signinErr);
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (error) {
       if (error.message.includes('not confirmed') || error.message.includes('Email not confirmed')) {
-        errEl.textContent = 'Please check your email and click the confirmation link first.';
+        showErr(el.signinErr, 'Please check your email and click the confirmation link first.');
       } else {
-        errEl.textContent = error.message;
+        showErr(el.signinErr, error.message);
       }
-      errEl.classList.remove('hidden');
       return;
     }
     currentUser = data.user;
     await ensureAppUser(data.user);
-    showApp();
-  } catch(e) {
-    errEl.textContent = 'Something went wrong. Try again.';
-    errEl.classList.remove('hidden');
+    enterApp();
+  } catch (e) {
+    showErr(el.signinErr, 'Something went wrong.');
   }
+});
+
+function showErr(elem, msg) {
+  if (elem) { elem.textContent = msg; show(elem); }
 }
 
-async function ensureAppUser(user, username) {
-  try {
-    const { data: existing } = await supabase.from(TB_USERS).select('*').eq('user_id', user.id).maybeSingle();
-    if (!existing) {
-      const name = username || user.user_metadata?.display_name || user.email.split('@')[0];
-      await supabase.from(TB_USERS).insert({ email: user.email, username: name });
-      currentUsername = name;
-    } else {
-      currentUsername = existing.username || user.email.split('@')[0];
-    }
-  } catch(e) {
-    console.error('ensureAppUser error:', e);
-    currentUsername = user.email.split('@')[0];
-  }
-}
+// Nav links
+el.linkSignin.addEventListener('click', (e) => { e.preventDefault(); showScreen('signin'); });
+el.linkSignup.addEventListener('click', (e) => { e.preventDefault(); showScreen('signup'); });
+el.btnGoSignin.addEventListener('click', () => showScreen('signin'));
 
-async function handleLogout() {
+// Logout
+el.btnLogout.addEventListener('click', async () => {
   try {
-    if (timerInterval) clearInterval(timerInterval);
+    clearTimer();
     await supabase.auth.signOut();
     currentUser = null;
-    currentUsername = '';
-    gameState = null;
-    showAuth('signin');
-    showToast('Logged out', 'success');
-  } catch(e) {
-    console.error('Logout error:', e);
-    showToast('Logout failed', 'error');
+    username = '';
+    showScreen('signin');
+    toast('Logged out', 'success');
+  } catch (e) {
+    toast('Logout failed', 'error');
   }
-}
+});
 
 // ========================================
-// MAIN APP
+// ENTER APP
 // ========================================
-function showApp() {
-  document.getElementById('auth-container').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  document.getElementById('username-display').textContent = currentUsername;
-  switchTab('play');
-  loadLeaderboard();
+function enterApp() {
+  showScreen('app');
+  el.navUser.textContent = username;
+  showPanel('play');
+  showView('menu');
   loadMyStats();
-}
-
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
-  if (btn) btn.classList.add('active');
-  const panel = document.getElementById('tab-' + tab);
-  if (panel) panel.classList.add('active');
-
-  if (tab === 'rankings') loadLeaderboard();
-  if (tab === 'stats') loadMyStats();
+  loadRankings();
 }
 
 // ========================================
-// GAME ENGINE
+// TABS
 // ========================================
-function startGame(difficulty) {
-  const diff = DIFFICULTY[difficulty] || DIFFICULTY.normal;
-
-  // Shuffle and pick 10 songs
-  const shuffled = [...SONG_DATABASE].sort(() => Math.random() - 0.5);
-  const questions = shuffled.slice(0, ROUNDS_PER_GAME).map(song => {
-    const choices = [song.answer, ...song.wrong].sort(() => Math.random() - 0.5);
-    return { clue: song.clue, answer: song.answer, choices, timeLimit: diff.time };
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const t = tab.dataset.t;
+    showPanel(t);
+    if (t === 'rank') loadRankings();
+    if (t === 'stats') loadMyStats();
   });
+});
 
-  gameState = {
-    difficulty: difficulty,
-    diffLabel: diff.label,
-    questions: questions,
-    round: 0,
-    score: 0,
-    streak: 0,
-    bestStreak: 0,
-    correct: 0,
-    totalTimeMs: 0,
-    timeLeft: 0,
-    answered: false,
-    results: []
-  };
+// ========================================
+// GAME
+// ========================================
+el.btnStart.addEventListener('click', startGame);
+el.btnAgain.addEventListener('click', startGame);
+el.btnNext.addEventListener('click', nextRound);
 
-  // Show game area, hide menu
-  document.getElementById('play-menu').classList.add('hidden');
-  document.getElementById('game-area').classList.remove('hidden');
-  document.getElementById('game-over').classList.add('hidden');
-
-  loadRound();
+function startGame() {
+  round = 0;
+  score = 0;
+  streak = 0;
+  bestStreak = 0;
+  correctCount = 0;
+  totalTime = 0;
+  // Pick 10 random songs
+  roundQuestions = shuffle(SONGS).slice(0, TOTAL_ROUNDS);
+  showView('game');
+  nextRound();
 }
 
-function loadRound() {
-  if (!gameState || gameState.round >= gameState.questions.length) {
+function nextRound() {
+  if (round >= TOTAL_ROUNDS) {
     endGame();
     return;
   }
-
-  const q = gameState.questions[gameState.round];
-  gameState.answered = false;
-  gameState.timeLeft = q.timeLimit;
-  gameState.roundStartTime = Date.now();
+  const q = roundQuestions[round];
+  round++;
+  answered = false;
 
   // Update HUD
-  document.getElementById('hud-round').textContent = (gameState.round + 1) + '/' + ROUNDS_PER_GAME;
-  document.getElementById('hud-score').textContent = gameState.score;
-  document.getElementById('hud-streak').textContent = gameState.streak + 'x';
-  document.getElementById('hud-diff').textContent = gameState.diffLabel;
+  el.hudRound.textContent = `${round}/${TOTAL_ROUNDS}`;
+  el.hudScore.textContent = score;
+  el.hudStreak.textContent = streak;
 
-  // Set clue
-  document.getElementById('clue-text').textContent = q.clue;
+  // Clue
+  el.clueText.textContent = q.clue;
 
-  // Timer
-  updateTimerDisplay();
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(timerTick, 100);
+  // Shuffle choices
+  const options = shuffle([q.answer, ...q.wrong]);
+  const letters = ['A', 'B', 'C', 'D'];
+  el.choices.innerHTML = options.map((opt, i) => `
+    <button class="choice-btn" data-idx="${i}">
+      <span class="opt-letter">${letters[i]}</span>
+      <span class="opt-text">
+        <span class="song-title">${esc(opt.title)}</span>
+        <span class="song-artist">${esc(opt.artist)}</span>
+      </span>
+    </button>
+  `).join('');
 
-  // Choices
-  const choicesEl = document.getElementById('choices-grid');
-  choicesEl.innerHTML = q.choices.map((c, i) => 
-    '<button class="choice-btn" onclick="window._selectChoice(' + i + ')">' +
-      '<span class="choice-title">' + escHtml(c.title) + '</span>' +
-      '<span class="choice-artist">' + escHtml(c.artist) + '</span>' +
-    '</button>'
-  ).join('');
+  // Store correct index
+  const correctIdx = options.indexOf(q.answer);
 
-  // Hide feedback
-  document.getElementById('feedback-bar').classList.add('hidden');
-  document.getElementById('feedback-bar').className = 'feedback-bar hidden';
-}
-
-function timerTick() {
-  if (!gameState || gameState.answered) return;
-  gameState.timeLeft -= 0.1;
-  if (gameState.timeLeft <= 0) {
-    gameState.timeLeft = 0;
-    clearInterval(timerInterval);
-    handleAnswer(-1); // time out
-  }
-  updateTimerDisplay();
-}
-
-function updateTimerDisplay() {
-  const pct = (gameState.timeLeft / gameState.questions[gameState.round].timeLimit) * 100;
-  const ring = document.getElementById('timer-ring');
-  const text = document.getElementById('timer-text');
-  if (ring) {
-    const circumference = 2 * Math.PI * 54;
-    const offset = circumference * (1 - pct / 100);
-    ring.style.strokeDasharray = circumference;
-    ring.style.strokeDashoffset = offset;
-    // Color
-    if (pct > 50) ring.style.stroke = 'var(--cyan)';
-    else if (pct > 25) ring.style.stroke = 'var(--gold)';
-    else ring.style.stroke = 'var(--pink)';
-  }
-  if (text) text.textContent = Math.ceil(gameState.timeLeft);
-}
-
-window._selectChoice = function(index) {
-  if (!gameState || gameState.answered) return;
-  handleAnswer(index);
-};
-
-function handleAnswer(choiceIndex) {
-  gameState.answered = true;
-  if (timerInterval) clearInterval(timerInterval);
-
-  const q = gameState.questions[gameState.round];
-  const timeTaken = Date.now() - gameState.roundStartTime;
-  let isCorrect = false;
-  let pointsEarned = 0;
-
-  if (choiceIndex >= 0) {
-    const chosen = q.choices[choiceIndex];
-    isCorrect = (chosen.title === q.answer.title && chosen.artist === q.answer.artist);
-  }
-
-  if (isCorrect) {
-    gameState.correct++;
-    gameState.streak++;
-    if (gameState.streak > gameState.bestStreak) gameState.bestStreak = gameState.streak;
-    const timeBonus = Math.round(gameState.timeLeft * TIME_BONUS_MULTIPLIER);
-    const streakBonus = (gameState.streak - 1) * STREAK_BONUS;
-    pointsEarned = BASE_POINTS + timeBonus + streakBonus;
-    gameState.score += pointsEarned;
-  } else {
-    gameState.streak = 0;
-  }
-
-  gameState.totalTimeMs += timeTaken;
-  gameState.results.push({
-    song: q.answer.title + ' - ' + q.answer.artist,
-    correct: isCorrect,
-    time: timeTaken,
-    points: pointsEarned
+  // Wire up choice buttons
+  el.choices.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      clearTimer();
+      const picked = parseInt(btn.dataset.idx);
+      handleAnswer(picked, correctIdx, options);
+    });
   });
 
-  // Update HUD
-  document.getElementById('hud-score').textContent = gameState.score;
-  document.getElementById('hud-streak').textContent = gameState.streak + 'x';
+  showView('game');
+  startTimer();
+}
 
-  // Highlight choices
-  const btns = document.querySelectorAll('.choice-btn');
-  btns.forEach((btn, i) => {
-    btn.disabled = true;
-    const c = q.choices[i];
-    if (c.title === q.answer.title && c.artist === q.answer.artist) {
+function handleAnswer(picked, correctIdx, options) {
+  const isCorrect = picked === correctIdx;
+  const timeTaken = ROUND_TIME - timeLeft;
+  totalTime += timeTaken;
+
+  // Highlight buttons
+  el.choices.querySelectorAll('.choice-btn').forEach(btn => {
+    const idx = parseInt(btn.dataset.idx);
+    if (idx === correctIdx) btn.classList.add('correct');
+    else if (idx === picked && !isCorrect) btn.classList.add('wrong');
+    btn.classList.add('disabled');
+  });
+
+  let pts = 0;
+  if (isCorrect) {
+    correctCount++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    // Points: base 100 + time bonus (up to 50) + streak bonus
+    const timeBonus = Math.round((timeLeft / ROUND_TIME) * 50);
+    const streakBonus = Math.min(streak * 10, 50);
+    pts = 100 + timeBonus + streakBonus;
+    score += pts;
+  } else {
+    streak = 0;
+  }
+
+  // Show feedback after a brief delay to see colors
+  setTimeout(() => {
+    if (isCorrect) {
+      el.fbIcon.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i>';
+      el.fbTitle.textContent = 'Correct!';
+      el.fbDetail.textContent = `${options[correctIdx].title} by ${options[correctIdx].artist}`;
+      el.fbPoints.textContent = `+${pts} points`;
+    } else {
+      el.fbIcon.innerHTML = '<i class="fas fa-times-circle" style="color:var(--danger)"></i>';
+      el.fbTitle.textContent = 'Wrong!';
+      el.fbDetail.textContent = `It was: ${options[correctIdx].title} by ${options[correctIdx].artist}`;
+      el.fbPoints.textContent = '+0 points';
+    }
+    el.btnNext.textContent = round >= TOTAL_ROUNDS ? 'See Results' : 'Next Round';
+    showView('feedback');
+  }, 800);
+}
+
+function timeUp() {
+  if (answered) return;
+  answered = true;
+  clearTimer();
+  totalTime += ROUND_TIME;
+  streak = 0;
+
+  // Show correct answer
+  const q = roundQuestions[round - 1];
+  const btns = el.choices.querySelectorAll('.choice-btn');
+  btns.forEach(btn => {
+    btn.classList.add('disabled');
+    // Find correct by matching title text
+    const titleEl = btn.querySelector('.song-title');
+    if (titleEl && titleEl.textContent === q.answer.title) {
       btn.classList.add('correct');
-    } else if (i === choiceIndex) {
-      btn.classList.add('wrong');
     }
   });
 
-  // Feedback bar
-  const fb = document.getElementById('feedback-bar');
-  fb.classList.remove('hidden', 'correct', 'wrong', 'timeout');
-  if (choiceIndex < 0) {
-    fb.classList.add('timeout');
-    fb.innerHTML = '<i class="fas fa-clock"></i> Time\'s up! It was: ' + escHtml(q.answer.title) + ' - ' + escHtml(q.answer.artist);
-  } else if (isCorrect) {
-    fb.classList.add('correct');
-    fb.innerHTML = '<i class="fas fa-check-circle"></i> Correct! +' + pointsEarned + ' points';
-  } else {
-    fb.classList.add('wrong');
-    fb.innerHTML = '<i class="fas fa-times-circle"></i> Wrong! It was: ' + escHtml(q.answer.title) + ' - ' + escHtml(q.answer.artist);
-  }
-
-  // Next round after delay
   setTimeout(() => {
-    gameState.round++;
-    loadRound();
-  }, 2000);
+    el.fbIcon.innerHTML = '<i class="fas fa-hourglass-end" style="color:var(--accent)"></i>';
+    el.fbTitle.textContent = "Time's Up!";
+    el.fbDetail.textContent = `It was: ${q.answer.title} by ${q.answer.artist}`;
+    el.fbPoints.textContent = '+0 points';
+    el.btnNext.textContent = round >= TOTAL_ROUNDS ? 'See Results' : 'Next Round';
+    showView('feedback');
+  }, 800);
+}
+
+// ========================================
+// TIMER
+// ========================================
+function startTimer() {
+  timeLeft = ROUND_TIME;
+  el.timerFill.style.width = '100%';
+  el.timerFill.classList.remove('danger');
+  el.timerSec.textContent = timeLeft;
+
+  clearTimer();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft < 0) timeLeft = 0;
+    const pct = (timeLeft / ROUND_TIME) * 100;
+    el.timerFill.style.width = pct + '%';
+    el.timerSec.textContent = timeLeft;
+
+    if (timeLeft <= 5) el.timerFill.classList.add('danger');
+
+    if (timeLeft <= 0) {
+      clearTimer();
+      timeUp();
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 }
 
 // ========================================
 // END GAME
 // ========================================
 async function endGame() {
-  if (timerInterval) clearInterval(timerInterval);
+  clearTimer();
+  el.overPts.textContent = score;
+  el.overCorrect.textContent = correctCount;
+  el.overStreak.textContent = bestStreak;
+  el.overAvg.textContent = correctCount > 0 ? (totalTime / correctCount).toFixed(1) : '0';
+  showView('over');
 
-  document.getElementById('game-area').classList.add('hidden');
-  document.getElementById('game-over').classList.remove('hidden');
-
-  const accuracy = gameState.questions.length > 0 ? Math.round((gameState.correct / gameState.questions.length) * 100) : 0;
-  const avgTime = gameState.correct > 0 ? Math.round(gameState.totalTimeMs / gameState.questions.length) : 0;
-
-  document.getElementById('final-score').textContent = gameState.score;
-  document.getElementById('final-correct').textContent = gameState.correct + '/' + ROUNDS_PER_GAME;
-  document.getElementById('final-streak').textContent = gameState.bestStreak;
-  document.getElementById('final-accuracy').textContent = accuracy + '%';
-
-  // Results list
-  const listEl = document.getElementById('results-list');
-  listEl.innerHTML = gameState.results.map((r, i) => 
-    '<div class="result-row ' + (r.correct ? 'correct' : 'wrong') + '">' +
-      '<span class="result-num">' + (i + 1) + '</span>' +
-      '<span class="result-song">' + escHtml(r.song) + '</span>' +
-      '<span class="result-points">' + (r.correct ? '+' + r.points : 'X') + '</span>' +
-    '</div>'
-  ).join('');
-
-  // Play again button
-  document.getElementById('btn-play-again').onclick = () => {
-    document.getElementById('game-over').classList.add('hidden');
-    document.getElementById('play-menu').classList.remove('hidden');
-  };
-
-  // Save score
+  // Save to Supabase
   try {
-    // Insert game history
-    for (const r of gameState.results) {
-      const parts = r.song.split(' - ');
-      await supabase.from(TB_HISTORY).insert({
-        username: currentUsername,
-        song_title: parts[0] || '',
-        artist: parts[1] || '',
-        was_correct: r.correct,
-        time_ms: r.time,
-        points_earned: r.points
-      });
-    }
+    if (!currentUser) return;
 
-    // Upsert aggregate score
-    const { data: existing } = await supabase.from(TB_SCORES)
-      .select('*').eq('user_id', currentUser.id).maybeSingle();
+    // Save game history
+    await supabase.from(TB_HISTORY).insert({
+      user_id: currentUser.id,
+      username: username,
+      score: score,
+      correct_answers: correctCount,
+      total_questions: TOTAL_ROUNDS,
+      best_streak: bestStreak
+    });
 
+    // Update cumulative scores
+    const { data: existing } = await supabase.from(TB_SCORES).select('*').eq('user_id', currentUser.id).maybeSingle();
     if (existing) {
-      const newTotal = (existing.total_points || 0) + gameState.score;
-      const newGames = (existing.games_played || 0) + 1;
-      const newCorrect = (existing.correct_answers || 0) + gameState.correct;
-      const newBestStreak = Math.max(existing.best_streak || 0, gameState.bestStreak);
-      const newAvgTime = Math.round(((existing.avg_time_ms || 0) * (existing.games_played || 0) + avgTime) / newGames);
-
       await supabase.from(TB_SCORES).update({
-        total_points: newTotal,
-        games_played: newGames,
-        correct_answers: newCorrect,
-        best_streak: newBestStreak,
-        avg_time_ms: newAvgTime
-      }).eq('id', existing.id);
+        total_points: existing.total_points + score,
+        games_played: existing.games_played + 1,
+        best_streak: Math.max(existing.best_streak, bestStreak),
+        total_correct: existing.total_correct + correctCount,
+        total_questions: existing.total_questions + TOTAL_ROUNDS,
+        username: username
+      }).eq('user_id', currentUser.id);
     } else {
       await supabase.from(TB_SCORES).insert({
-        username: currentUsername,
-        total_points: gameState.score,
+        user_id: currentUser.id,
+        username: username,
+        total_points: score,
         games_played: 1,
-        correct_answers: gameState.correct,
-        best_streak: gameState.bestStreak,
-        avg_time_ms: avgTime
+        best_streak: bestStreak,
+        total_correct: correctCount,
+        total_questions: TOTAL_ROUNDS
       });
     }
 
-    showToast('Score saved!', 'success');
-  } catch(e) {
+    toast('Score saved!', 'success');
+  } catch (e) {
     console.error('Save score error:', e);
-    showToast('Could not save score', 'error');
   }
 }
 
 // ========================================
-// LEADERBOARD
+// RANKINGS
 // ========================================
-async function loadLeaderboard() {
-  const container = document.getElementById('leaderboard-list');
-  if (!container) return;
-  container.innerHTML = '<div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Loading rankings...</div>';
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSort = btn.dataset.s;
+    loadRankings();
+  });
+});
 
+async function loadRankings() {
   try {
     const { data, error } = await supabase.from(TB_SCORES)
-      .select('*')
-      .order(leaderboardSort, { ascending: false })
+      .select('username, total_points, best_streak, games_played')
+      .order(currentSort, { ascending: false })
       .limit(50);
 
     if (error) throw error;
     if (!data || data.length === 0) {
-      container.innerHTML = '<div class="empty-text"><i class="fas fa-trophy"></i><p>No scores yet. Be the first!</p></div>';
+      el.lbList.innerHTML = '<div class="lb-empty"><p>No rankings yet. Be the first to play!</p></div>';
       return;
     }
 
-    container.innerHTML = data.map((row, i) => {
-      const medal = i === 0 ? '<i class="fas fa-crown" style="color:var(--gold)"></i>' :
-                    i === 1 ? '<i class="fas fa-medal" style="color:#c0c0c0"></i>' :
-                    i === 2 ? '<i class="fas fa-medal" style="color:#cd7f32"></i>' :
-                    '<span class="rank-num">' + (i + 1) + '</span>';
-      const accuracy = row.games_played > 0 ? Math.round((row.correct_answers / (row.games_played * ROUNDS_PER_GAME)) * 100) : 0;
-      return '<div class="lb-row' + (row.user_id === currentUser?.id ? ' me' : '') + '">' +
-        '<div class="lb-rank">' + medal + '</div>' +
-        '<div class="lb-info">' +
-          '<div class="lb-name">' + escHtml(row.username || 'Unknown') + '</div>' +
-          '<div class="lb-meta">' + row.games_played + ' games | ' + accuracy + '% accuracy</div>' +
-        '</div>' +
-        '<div class="lb-score">' + (row.total_points || 0).toLocaleString() + '</div>' +
-      '</div>';
+    el.lbList.innerHTML = data.map((row, i) => {
+      const val = currentSort === 'total_points' ? row.total_points :
+                  currentSort === 'best_streak' ? row.best_streak : row.games_played;
+      return `
+        <div class="lb-row">
+          <div class="lb-rank">${i + 1}</div>
+          <div class="lb-name">${esc(row.username || 'Anonymous')}</div>
+          <div class="lb-val">${val.toLocaleString()}</div>
+        </div>`;
     }).join('');
-  } catch(e) {
-    console.error('Leaderboard error:', e);
-    container.innerHTML = '<div class="empty-text"><p>Failed to load rankings</p></div>';
+  } catch (e) {
+    console.error('Rankings error:', e);
+    el.lbList.innerHTML = '<div class="lb-empty"><p>Could not load rankings.</p></div>';
   }
 }
 
 // ========================================
-// MY STATS
+// STATS
 // ========================================
 async function loadMyStats() {
-  if (!currentUser) return;
-
   try {
-    // Get aggregate stats
-    const { data: stats } = await supabase.from(TB_SCORES)
-      .select('*').eq('user_id', currentUser.id).maybeSingle();
+    if (!currentUser) return;
+    const { data } = await supabase.from(TB_SCORES).select('*').eq('user_id', currentUser.id).maybeSingle();
+    if (data) {
+      el.stPlayed.textContent = data.games_played || 0;
+      el.stPts.textContent = (data.total_points || 0).toLocaleString();
+      el.stStreak.textContent = data.best_streak || 0;
+      const acc = data.total_questions > 0 ? Math.round((data.total_correct / data.total_questions) * 100) : 0;
+      el.stAcc.textContent = acc + '%';
 
-    const totalPts = stats?.total_points || 0;
-    const gamesPlayed = stats?.games_played || 0;
-    const correctAns = stats?.correct_answers || 0;
-    const bestStreak = stats?.best_streak || 0;
-    const totalQ = gamesPlayed * ROUNDS_PER_GAME;
-    const accuracy = totalQ > 0 ? Math.round((correctAns / totalQ) * 100) : 0;
-
-    document.getElementById('stat-total-points').textContent = totalPts.toLocaleString();
-    document.getElementById('stat-games').textContent = gamesPlayed;
-    document.getElementById('stat-accuracy').textContent = accuracy + '%';
-    document.getElementById('stat-streak').textContent = bestStreak;
-
-    // Recent history
-    const { data: history } = await supabase.from(TB_HISTORY)
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    const histEl = document.getElementById('history-list');
-    if (!history || history.length === 0) {
-      histEl.innerHTML = '<div class="empty-text"><p>No game history yet. Play a round!</p></div>';
-      return;
+      // Also update menu mini-stats
+      el.msPlayed.textContent = data.games_played || 0;
+      el.msPts.textContent = (data.total_points || 0).toLocaleString();
+      el.msStreak.textContent = data.best_streak || 0;
     }
-
-    histEl.innerHTML = history.map(h => 
-      '<div class="history-row ' + (h.was_correct ? 'correct' : 'wrong') + '">' +
-        '<div class="history-icon"><i class="fas fa-' + (h.was_correct ? 'check' : 'times') + '"></i></div>' +
-        '<div class="history-info">' +
-          '<div class="history-song">' + escHtml(h.song_title || '') + '</div>' +
-          '<div class="history-artist">' + escHtml(h.artist || '') + '</div>' +
-        '</div>' +
-        '<div class="history-points">' + (h.was_correct ? '+' + h.points_earned : '0') + '</div>' +
-      '</div>'
-    ).join('');
-  } catch(e) {
-    console.error('Load stats error:', e);
+  } catch (e) {
+    console.error('Stats error:', e);
   }
 }
 
 // ========================================
-// UTILITIES
+// UTILS
 // ========================================
-function escHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
-}
-
-let toastContainer;
-function showToast(msg, type) {
-  if (!toastContainer) {
-    toastContainer = document.createElement('div');
-    toastContainer.className = 'toast-container';
-    document.body.appendChild(toastContainer);
-  }
-  const t = document.createElement('div');
-  t.className = 'toast toast-' + (type || 'info');
-  t.textContent = msg;
-  toastContainer.appendChild(t);
-  setTimeout(() => {
-    t.style.opacity = '0';
-    t.style.transform = 'translateX(100%)';
-    setTimeout(() => t.remove(), 300);
-  }, 3500);
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
 }
