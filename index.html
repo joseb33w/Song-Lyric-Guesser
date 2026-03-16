@@ -2,260 +2,161 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lyric Drop - Song Lyric Guesser</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lyric Drop</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
 </head>
 <body>
+
   <!-- LOADING -->
-  <div id="loading-screen" class="loading-screen">
-    <div class="loader-content">
-      <div class="vinyl-loader">
-        <div class="vinyl-disc">
-          <div class="vinyl-label"><i class="fas fa-music"></i></div>
-        </div>
-      </div>
-      <h1>Lyric Drop</h1>
-      <p>Guess the song. Beat the clock.</p>
-      <div class="load-bar"><div class="load-fill"></div></div>
+  <div id="screen-loading" class="screen loading-screen">
+    <div class="vinyl-spin"><div class="vinyl-center"><i class="fas fa-music"></i></div></div>
+    <h1 class="brand">Lyric Drop</h1>
+    <p class="tagline">Guess the song. Beat the clock.</p>
+    <div class="load-track"><div class="load-fill"></div></div>
+  </div>
+
+  <!-- AUTH: SIGN UP -->
+  <div id="screen-signup" class="screen hidden">
+    <div class="auth-decor"><span></span><span></span><span></span></div>
+    <div class="auth-card">
+      <div class="auth-icon"><i class="fas fa-headphones"></i></div>
+      <h1>Join the Stage</h1>
+      <p class="sub">Pick a username and start guessing</p>
+      <div id="signup-error" class="error-box hidden"></div>
+      <form id="signup-form">
+        <div class="field"><i class="fas fa-user"></i><input id="signup-username" type="text" placeholder="Username" required maxlength="20"></div>
+        <div class="field"><i class="fas fa-envelope"></i><input id="signup-email" type="email" placeholder="Email" required></div>
+        <div class="field"><i class="fas fa-lock"></i><input id="signup-password" type="password" placeholder="Password (6+)" required minlength="6"></div>
+        <button type="submit" class="btn-main">Create Account <i class="fas fa-arrow-right"></i></button>
+      </form>
+      <p class="switch">Already playing? <a id="link-signin" href="#">Sign In</a></p>
     </div>
   </div>
 
-  <!-- AUTH -->
-  <div id="auth-container" class="auth-container hidden">
-    <div class="auth-bg">
-      <div class="note n1"><i class="fas fa-music"></i></div>
-      <div class="note n2"><i class="fas fa-headphones"></i></div>
-      <div class="note n3"><i class="fas fa-guitar"></i></div>
-      <div class="note n4"><i class="fas fa-drum"></i></div>
-      <div class="eq-bars">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
+  <!-- AUTH: CHECK EMAIL -->
+  <div id="screen-checkemail" class="screen hidden">
+    <div class="auth-card">
+      <div class="auth-icon"><i class="fas fa-envelope-open-text"></i></div>
+      <h1>Check Your Email</h1>
+      <p class="sub">We sent a confirmation link to <strong id="confirm-email-addr"></strong>. Click it, then sign in.</p>
+      <button id="btn-go-signin" class="btn-main">Go to Sign In <i class="fas fa-arrow-right"></i></button>
     </div>
+  </div>
 
-    <!-- SIGN UP -->
-    <div id="signup-screen" class="auth-screen">
-      <div class="auth-card">
-        <div class="auth-icon"><i class="fas fa-headphones"></i></div>
-        <h1>Join the Stage</h1>
-        <p class="auth-sub">Create your player profile and start guessing</p>
-        <div id="signup-error" class="auth-error hidden"></div>
-        <form id="signup-form">
-          <div class="field">
-            <i class="fas fa-at"></i>
-            <input id="signup-username" type="text" placeholder="Pick a username" required maxlength="20">
-          </div>
-          <div class="field">
-            <i class="fas fa-envelope"></i>
-            <input id="signup-email" type="email" placeholder="Email address" required>
-          </div>
-          <div class="field">
-            <i class="fas fa-lock"></i>
-            <input id="signup-password" type="password" placeholder="Password (6+ chars)" required minlength="6">
-          </div>
-          <button type="submit" class="btn-primary">
-            <span>Create Account</span><i class="fas fa-arrow-right"></i>
-          </button>
-        </form>
-        <p class="auth-toggle">Already playing? <a href="#" id="go-signin">Sign In</a></p>
-      </div>
-    </div>
-
-    <!-- CHECK EMAIL -->
-    <div id="checkemail-screen" class="auth-screen hidden">
-      <div class="auth-card">
-        <div class="auth-icon"><i class="fas fa-envelope-open-text"></i></div>
-        <h1>Check Your Email</h1>
-        <p class="auth-sub">We sent a confirmation link to <strong id="confirm-email"></strong>. Click it, then come back to sign in.</p>
-        <button class="btn-primary" id="go-signin-from-email">
-          <span>Go to Sign In</span><i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- SIGN IN -->
-    <div id="signin-screen" class="auth-screen hidden">
-      <div class="auth-card">
-        <div class="auth-icon"><i class="fas fa-microphone-alt"></i></div>
-        <h1>Welcome Back</h1>
-        <p class="auth-sub">Sign in and get back on stage</p>
-        <div id="signin-error" class="auth-error hidden"></div>
-        <form id="signin-form">
-          <div class="field">
-            <i class="fas fa-envelope"></i>
-            <input id="signin-email" type="email" placeholder="Email address" required>
-          </div>
-          <div class="field">
-            <i class="fas fa-lock"></i>
-            <input id="signin-password" type="password" placeholder="Password" required>
-          </div>
-          <button type="submit" class="btn-primary">
-            <span>Sign In</span><i class="fas fa-arrow-right"></i>
-          </button>
-        </form>
-        <p class="auth-toggle">New here? <a href="#" id="go-signup">Create Account</a></p>
-      </div>
+  <!-- AUTH: SIGN IN -->
+  <div id="screen-signin" class="screen hidden">
+    <div class="auth-decor"><span></span><span></span><span></span></div>
+    <div class="auth-card">
+      <div class="auth-icon"><i class="fas fa-microphone-alt"></i></div>
+      <h1>Welcome Back</h1>
+      <p class="sub">Sign in and get back on stage</p>
+      <div id="signin-error" class="error-box hidden"></div>
+      <form id="signin-form">
+        <div class="field"><i class="fas fa-envelope"></i><input id="signin-email" type="email" placeholder="Email" required></div>
+        <div class="field"><i class="fas fa-lock"></i><input id="signin-password" type="password" placeholder="Password" required></div>
+        <button type="submit" class="btn-main">Sign In <i class="fas fa-arrow-right"></i></button>
+      </form>
+      <p class="switch">New here? <a id="link-signup" href="#">Create Account</a></p>
     </div>
   </div>
 
   <!-- MAIN APP -->
-  <div id="app" class="hidden">
-    <!-- NAV -->
+  <div id="screen-app" class="screen hidden">
+
+    <!-- Navbar -->
     <nav class="navbar">
-      <div class="nav-brand">
-        <i class="fas fa-compact-disc nav-icon"></i>
-        <span>Lyric Drop</span>
-      </div>
-      <div class="nav-user">
-        <span id="nav-username" class="username-chip"></span>
-        <button id="btn-logout" class="btn-icon" title="Log out"><i class="fas fa-sign-out-alt"></i></button>
+      <div class="nav-left"><i class="fas fa-compact-disc spin-icon"></i><span class="brand-sm">Lyric Drop</span></div>
+      <div class="nav-right">
+        <span id="nav-user" class="chip"></span>
+        <button id="btn-logout" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </nav>
 
-    <!-- TAB BAR -->
-    <div class="tab-bar">
-      <button class="tab active" data-tab="play"><i class="fas fa-play"></i> Play</button>
-      <button class="tab" data-tab="leaderboard"><i class="fas fa-trophy"></i> Rankings</button>
-      <button class="tab" data-tab="stats"><i class="fas fa-chart-bar"></i> Stats</button>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-t="play"><i class="fas fa-play"></i> Play</button>
+      <button class="tab" data-t="rank"><i class="fas fa-trophy"></i> Rankings</button>
+      <button class="tab" data-t="stats"><i class="fas fa-chart-bar"></i> Stats</button>
     </div>
 
-    <!-- PLAY TAB -->
-    <div id="tab-play" class="tab-panel active">
-      <!-- Pregame -->
-      <div id="play-menu" class="pregame">
-        <div class="pregame-hero">
-          <div class="hero-vinyl">
-            <div class="vinyl-disc large">
-              <div class="vinyl-label"><i class="fas fa-music"></i></div>
-            </div>
-          </div>
-          <h1>Ready to Play?</h1>
-          <p>Read the clue, guess the song, beat the clock!<br>10 rounds - 15 seconds each.</p>
-          <button id="btn-start" class="btn-start">
-            <i class="fas fa-play"></i> Start Game
-          </button>
-          <div class="quick-stats">
-            <div><span id="qs-played">0</span><small>Played</small></div>
-            <div><span id="qs-correct">0</span><small>Correct</small></div>
-            <div><span id="qs-streak">0</span><small>Best Streak</small></div>
-            <div><span id="qs-points">0</span><small>Points</small></div>
-          </div>
+    <!-- PLAY PANEL -->
+    <div id="panel-play" class="panel active">
+
+      <!-- Menu (pre-game) -->
+      <div id="view-menu" class="view">
+        <div class="vinyl-spin large"><div class="vinyl-center"><i class="fas fa-music"></i></div></div>
+        <h1>Ready to Play?</h1>
+        <p class="desc">Read the clue, pick the correct song.<br>10 rounds · 15 seconds each.</p>
+        <button id="btn-start" class="btn-play"><i class="fas fa-play"></i> Start Game</button>
+        <div class="mini-stats">
+          <div><strong id="ms-played">0</strong><small>Played</small></div>
+          <div><strong id="ms-pts">0</strong><small>Points</small></div>
+          <div><strong id="ms-streak">0</strong><small>Best Streak</small></div>
         </div>
       </div>
 
-      <!-- In-Game -->
-      <div id="game-area" class="game-area hidden">
-        <div class="game-hud">
-          <div class="hud-item">
-            <i class="fas fa-music"></i>
-            <span>Round <strong id="round-num">1</strong>/10</span>
-          </div>
-          <div class="hud-item score-display">
-            <i class="fas fa-star"></i>
-            <span id="game-score">0</span> pts
-          </div>
-          <div class="hud-item streak-display">
-            <i class="fas fa-fire"></i>
-            <span id="game-streak">0</span> streak
-          </div>
+      <!-- In-game -->
+      <div id="view-game" class="view hidden">
+        <div class="hud">
+          <span class="hud-pill"><i class="fas fa-music"></i> <span id="hud-round">1/10</span></span>
+          <span class="hud-pill gold"><i class="fas fa-star"></i> <span id="hud-score">0</span></span>
+          <span class="hud-pill fire"><i class="fas fa-fire"></i> <span id="hud-streak">0</span></span>
         </div>
-
-        <!-- Timer -->
-        <div class="timer-track">
-          <div id="timer-fill" class="timer-fill"></div>
+        <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
+        <div class="timer-label"><i class="fas fa-hourglass-half"></i> <span id="timer-sec">15</span>s</div>
+        <div class="clue-card">
+          <i class="fas fa-quote-left q-icon"></i>
+          <p id="clue-text"></p>
         </div>
-        <div class="timer-text"><i class="fas fa-hourglass-half"></i> <span id="timer-label">15s</span></div>
-
-        <!-- Clue Card -->
-        <div class="lyric-card">
-          <div class="lyric-quote"><i class="fas fa-quote-left"></i></div>
-          <p id="lyric-text" class="lyric-text"></p>
-        </div>
-
-        <!-- Answer Choices -->
         <div id="choices" class="choices"></div>
+      </div>
 
-        <!-- Feedback -->
-        <div id="feedback" class="feedback hidden">
-          <div id="feedback-icon" class="feedback-icon"></div>
-          <h2 id="feedback-title"></h2>
-          <p id="feedback-detail"></p>
-          <div id="feedback-points" class="feedback-points"></div>
-          <button id="btn-next" class="btn-primary">
-            <span>Next Round</span><i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
+      <!-- Feedback -->
+      <div id="view-feedback" class="view hidden">
+        <div id="fb-icon" class="fb-icon"></div>
+        <h2 id="fb-title"></h2>
+        <p id="fb-detail" class="sub"></p>
+        <div id="fb-points" class="fb-pts"></div>
+        <button id="btn-next" class="btn-main">Next Round <i class="fas fa-arrow-right"></i></button>
       </div>
 
       <!-- Game Over -->
-      <div id="game-over" class="game-over hidden">
-        <div class="go-card">
-          <div class="go-icon"><i class="fas fa-flag-checkered"></i></div>
-          <h1>Game Over!</h1>
-          <div class="go-score">
-            <span id="go-total">0</span>
-            <small>Total Points</small>
-          </div>
-          <div class="go-stats">
-            <div><i class="fas fa-check-circle"></i> <span id="go-correct">0</span>/10 Correct</div>
-            <div><i class="fas fa-fire"></i> Best Streak: <span id="go-streak">0</span></div>
-            <div><i class="fas fa-stopwatch"></i> Avg Time: <span id="go-avg">0</span>s</div>
-          </div>
-          <div class="go-actions">
-            <button id="btn-play-again" class="btn-start"><i class="fas fa-redo"></i> Play Again</button>
-          </div>
+      <div id="view-over" class="view hidden">
+        <div class="over-icon"><i class="fas fa-flag-checkered"></i></div>
+        <h1>Game Over!</h1>
+        <div class="over-score"><span id="over-pts">0</span><small>Total Points</small></div>
+        <div class="over-stats">
+          <div><i class="fas fa-check-circle"></i> <span id="over-correct">0</span>/10 Correct</div>
+          <div><i class="fas fa-fire"></i> Best Streak: <span id="over-streak">0</span></div>
+          <div><i class="fas fa-stopwatch"></i> Avg Time: <span id="over-avg">0</span>s</div>
         </div>
+        <button id="btn-again" class="btn-play"><i class="fas fa-redo"></i> Play Again</button>
       </div>
     </div>
 
-    <!-- LEADERBOARD TAB -->
-    <div id="tab-leaderboard" class="tab-panel">
-      <div class="section-head">
-        <h2><i class="fas fa-trophy"></i> Global Rankings</h2>
-        <p>Top players worldwide</p>
+    <!-- RANKINGS PANEL -->
+    <div id="panel-rank" class="panel">
+      <div class="sec-head"><h2><i class="fas fa-trophy"></i> Global Rankings</h2><p>Top players worldwide</p></div>
+      <div class="sort-bar">
+        <button class="sort-btn active" data-s="total_points">Points</button>
+        <button class="sort-btn" data-s="best_streak">Streak</button>
+        <button class="sort-btn" data-s="games_played">Games</button>
       </div>
-      <div class="lb-sort-bar">
-        <button class="lb-sort active" data-sort="total_points">Points</button>
-        <button class="lb-sort" data-sort="best_streak">Streak</button>
-        <button class="lb-sort" data-sort="games_played">Games</button>
-      </div>
-      <div id="leaderboard-list" class="leaderboard-list"></div>
+      <div id="lb-list" class="lb-list"></div>
     </div>
 
-    <!-- STATS TAB -->
-    <div id="tab-stats" class="tab-panel">
-      <div class="section-head">
-        <h2><i class="fas fa-chart-bar"></i> Your Stats</h2>
-        <p>Personal performance</p>
-      </div>
+    <!-- STATS PANEL -->
+    <div id="panel-stats" class="panel">
+      <div class="sec-head"><h2><i class="fas fa-chart-bar"></i> Your Stats</h2><p>Personal performance</p></div>
       <div class="stats-grid">
-        <div class="stat-card">
-          <i class="fas fa-gamepad"></i>
-          <span id="stat-played" class="stat-value">0</span>
-          <small>Games Played</small>
-        </div>
-        <div class="stat-card">
-          <i class="fas fa-star"></i>
-          <span id="stat-points" class="stat-value">0</span>
-          <small>Total Points</small>
-        </div>
-        <div class="stat-card">
-          <i class="fas fa-bullseye"></i>
-          <span id="stat-accuracy" class="stat-value">0%</span>
-          <small>Accuracy</small>
-        </div>
-        <div class="stat-card">
-          <i class="fas fa-fire"></i>
-          <span id="stat-streak" class="stat-value">0</span>
-          <small>Best Streak</small>
-        </div>
+        <div class="scard"><i class="fas fa-gamepad"></i><strong id="st-played">0</strong><small>Games</small></div>
+        <div class="scard"><i class="fas fa-star"></i><strong id="st-pts">0</strong><small>Points</small></div>
+        <div class="scard"><i class="fas fa-bullseye"></i><strong id="st-acc">0%</strong><small>Accuracy</small></div>
+        <div class="scard"><i class="fas fa-fire"></i><strong id="st-streak">0</strong><small>Best Streak</small></div>
       </div>
-      <h3 class="history-title"><i class="fas fa-history"></i> Recent Games</h3>
-      <div id="history-list" class="history-list"></div>
     </div>
   </div>
 
