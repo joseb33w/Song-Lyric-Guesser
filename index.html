@@ -125,8 +125,8 @@
 
     <!-- PLAY TAB -->
     <div id="tab-play" class="tab-panel active">
-      <!-- Pregame -->
-      <div id="pregame" class="pregame">
+      <!-- Pregame / Play Menu -->
+      <div id="play-menu" class="pregame">
         <div class="pregame-hero">
           <div class="hero-vinyl">
             <div class="vinyl-disc large">
@@ -239,11 +239,44 @@
         <h2><i class="fas fa-chart-bar"></i> Your Stats</h2>
         <p>Personal performance breakdown</p>
       </div>
-      <div id="my-stats" class="my-stats"></div>
-      <div class="section-head" style="margin-top:24px">
-        <h2><i class="fas fa-history"></i> Recent Games</h2>
+      <div id="my-stats-content" class="stats-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-gamepad"></i></div>
+            <div class="stat-value" id="stat-games">0</div>
+            <div class="stat-label">Games Played</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <div class="stat-value" id="stat-points">0</div>
+            <div class="stat-label">Total Points</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+            <div class="stat-value" id="stat-correct">0</div>
+            <div class="stat-label">Correct Answers</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+            <div class="stat-value" id="stat-accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+            <div class="stat-value" id="stat-streak">0</div>
+            <div class="stat-label">Best Streak</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+            <div class="stat-value" id="stat-avg-time">0s</div>
+            <div class="stat-label">Avg Answer Time</div>
+          </div>
+        </div>
+        <div class="recent-games">
+          <h3><i class="fas fa-history"></i> Recent Games</h3>
+          <div id="recent-games-list" class="recent-list"></div>
+        </div>
       </div>
-      <div id="history-list" class="history-list"></div>
     </div>
   </div>
 
