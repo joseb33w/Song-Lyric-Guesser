@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lyric Drop -- Song Lyric Guesser</title>
+  <title>Lyric Drop - Song Lyric Guesser</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
@@ -42,7 +42,7 @@
       <div class="auth-card">
         <div class="auth-icon"><i class="fas fa-headphones"></i></div>
         <h1>Join the Stage</h1>
-        <p class="auth-sub">Create your player profile and start guessing lyrics</p>
+        <p class="auth-sub">Create your player profile and start guessing</p>
         <div id="signup-error" class="auth-error hidden"></div>
         <form id="signup-form">
           <div class="field">
@@ -120,12 +120,12 @@
     <div class="tab-bar">
       <button class="tab active" data-tab="play"><i class="fas fa-play"></i> Play</button>
       <button class="tab" data-tab="leaderboard"><i class="fas fa-trophy"></i> Rankings</button>
-      <button class="tab" data-tab="stats"><i class="fas fa-chart-bar"></i> My Stats</button>
+      <button class="tab" data-tab="stats"><i class="fas fa-chart-bar"></i> Stats</button>
     </div>
 
     <!-- PLAY TAB -->
     <div id="tab-play" class="tab-panel active">
-      <!-- Pregame / Play Menu -->
+      <!-- Pregame -->
       <div id="play-menu" class="pregame">
         <div class="pregame-hero">
           <div class="hero-vinyl">
@@ -134,12 +134,7 @@
             </div>
           </div>
           <h1>Ready to Play?</h1>
-          <p>Read the lyrics, guess the song, beat the clock.<br>Faster answers = more points!</p>
-          <div class="difficulty-picker">
-            <button class="diff-btn active" data-diff="normal"><i class="fas fa-clock"></i> Normal <small>15s</small></button>
-            <button class="diff-btn" data-diff="hard"><i class="fas fa-bolt"></i> Hard <small>10s</small></button>
-            <button class="diff-btn" data-diff="blitz"><i class="fas fa-fire"></i> Blitz <small>5s</small></button>
-          </div>
+          <p>Read the clue, guess the song, beat the clock!<br>10 rounds - 15 seconds each.</p>
           <button id="btn-start" class="btn-start">
             <i class="fas fa-play"></i> Start Game
           </button>
@@ -169,20 +164,19 @@
           </div>
         </div>
 
-        <!-- Timer Bar -->
+        <!-- Timer -->
         <div class="timer-track">
           <div id="timer-fill" class="timer-fill"></div>
         </div>
         <div class="timer-text"><i class="fas fa-hourglass-half"></i> <span id="timer-label">15s</span></div>
 
-        <!-- Lyric Card -->
+        <!-- Clue Card -->
         <div class="lyric-card">
           <div class="lyric-quote"><i class="fas fa-quote-left"></i></div>
           <p id="lyric-text" class="lyric-text"></p>
-          <div class="lyric-hint hidden" id="lyric-hint"></div>
         </div>
 
-        <!-- Choices -->
+        <!-- Answer Choices -->
         <div id="choices" class="choices"></div>
 
         <!-- Feedback -->
@@ -207,9 +201,9 @@
             <small>Total Points</small>
           </div>
           <div class="go-stats">
-            <div><i class="fas fa-check-circle"></i><span id="go-correct">0</span>/10 Correct</div>
-            <div><i class="fas fa-fire"></i>Best Streak: <span id="go-streak">0</span></div>
-            <div><i class="fas fa-stopwatch"></i>Avg Time: <span id="go-avg">0</span>s</div>
+            <div><i class="fas fa-check-circle"></i> <span id="go-correct">0</span>/10 Correct</div>
+            <div><i class="fas fa-fire"></i> Best Streak: <span id="go-streak">0</span></div>
+            <div><i class="fas fa-stopwatch"></i> Avg Time: <span id="go-avg">0</span>s</div>
           </div>
           <div class="go-actions">
             <button id="btn-play-again" class="btn-start"><i class="fas fa-redo"></i> Play Again</button>
@@ -224,11 +218,10 @@
         <h2><i class="fas fa-trophy"></i> Global Rankings</h2>
         <p>Top players worldwide</p>
       </div>
-      <div class="lb-filter-bar">
-        <button class="lb-filter active" data-sort="total_points">Points</button>
-        <button class="lb-filter" data-sort="correct_answers">Accuracy</button>
-        <button class="lb-filter" data-sort="best_streak">Streak</button>
-        <button class="lb-filter" data-sort="games_played">Games</button>
+      <div class="lb-sort-bar">
+        <button class="lb-sort active" data-sort="total_points">Points</button>
+        <button class="lb-sort" data-sort="best_streak">Streak</button>
+        <button class="lb-sort" data-sort="games_played">Games</button>
       </div>
       <div id="leaderboard-list" class="leaderboard-list"></div>
     </div>
@@ -237,46 +230,32 @@
     <div id="tab-stats" class="tab-panel">
       <div class="section-head">
         <h2><i class="fas fa-chart-bar"></i> Your Stats</h2>
-        <p>Personal performance breakdown</p>
+        <p>Personal performance</p>
       </div>
-      <div id="my-stats-content" class="stats-content">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-gamepad"></i></div>
-            <div class="stat-value" id="stat-games">0</div>
-            <div class="stat-label">Games Played</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-star"></i></div>
-            <div class="stat-value" id="stat-points">0</div>
-            <div class="stat-label">Total Points</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
-            <div class="stat-value" id="stat-correct">0</div>
-            <div class="stat-label">Correct Answers</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-percentage"></i></div>
-            <div class="stat-value" id="stat-accuracy">0%</div>
-            <div class="stat-label">Accuracy</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-fire"></i></div>
-            <div class="stat-value" id="stat-streak">0</div>
-            <div class="stat-label">Best Streak</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
-            <div class="stat-value" id="stat-avg-time">0s</div>
-            <div class="stat-label">Avg Answer Time</div>
-          </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fas fa-gamepad"></i>
+          <span id="stat-played" class="stat-value">0</span>
+          <small>Games Played</small>
         </div>
-        <div class="recent-games">
-          <h3><i class="fas fa-history"></i> Recent Games</h3>
-          <div id="recent-games-list" class="recent-list"></div>
+        <div class="stat-card">
+          <i class="fas fa-star"></i>
+          <span id="stat-points" class="stat-value">0</span>
+          <small>Total Points</small>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-bullseye"></i>
+          <span id="stat-accuracy" class="stat-value">0%</span>
+          <small>Accuracy</small>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-fire"></i>
+          <span id="stat-streak" class="stat-value">0</span>
+          <small>Best Streak</small>
         </div>
       </div>
+      <h3 class="history-title"><i class="fas fa-history"></i> Recent Games</h3>
+      <div id="history-list" class="history-list"></div>
     </div>
   </div>
 
